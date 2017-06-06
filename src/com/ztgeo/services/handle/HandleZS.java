@@ -444,8 +444,8 @@ public class HandleZS {
 		//按照属性库中无权利数据进行处理
 		String QLBH = UUID.randomUUID().toString();//权利编号
 		String SLBH = PublicDo.getSLBHWithDJB(zs.getYwzh());//slbh
-		String QLXZ = zs.getQsxz();//权利类型
-		String QLLX = zs.getTdsyqlx();//权利性质
+		String  QLLX= zs.getQsxz();//权利类型
+		String  QLXZ= zs.getTdsyqlx();//权利性质
 		String TDSYQR = zs.getTdsyqr();//土地使用权人
 		String DYTDMJ = zs.getDytdmj();//独有土地面积
 		String FTTDMJ = zs.getFttdmj();//分摊土地面积
