@@ -48,12 +48,15 @@ public class ReadXml {
 		case "url2":
 			StaticParams.url2 = e.getText();
 			break;
-			case "startTime":
-				StaticParams.QuartzTime = e.getText();
-				break;
-			default:
-				break;
-			}
+		case "startTime":
+			StaticParams.QuartzTime = e.getText();
+			break;
+		case "rollbackType":
+			StaticParams.rollbackType = e.getText();
+			break;
+		default:
+			break;
+		}
 		}
 		
 		
@@ -67,6 +70,7 @@ public class ReadXml {
 				+"\n"+StaticParams.username2
 				+"\n"+StaticParams.password2
 				+"\n"+StaticParams.url2
+				+"\n"+StaticParams.rollbackType
 				+"\n"+StaticParams.QuartzTime
 				);
 		System.out.println("xml获取得到的参数:"
@@ -76,6 +80,8 @@ public class ReadXml {
 				+"\n不动产库用户名:"+StaticParams.username2
 				+"\n不动产库密码:"+StaticParams.password2
 				+"\n不动产库url:"+StaticParams.url2
+				+"\n"+StaticParams.rollbackType
+				+"\n"+StaticParams.QuartzTime
 				);
 		
 	}

@@ -111,6 +111,8 @@ public class HandleZS {
 			PublicDo.changeState("fc_zsxx", "slbh", zs.getSlbh(), ZLZT);
 			log.error("※数据回滚语句:"+rollBacksql.toString()+"※");
 			System.out.println("※INFO:数据回滚语句:"+rollBacksql.toString()+"※");
+			//根据回滚语句和回滚方式进行自动回滚
+			PublicDo.rollbackNewD(rollBacksql.toString(),ZLZT);
 					}
 	}
 	
@@ -361,7 +363,8 @@ public class HandleZS {
 		System.out.println("※INFO:正在进行YWZH非空的检查※");
 	if(!"".equals(zs.getYwzh())&&zs.getYwzh()!=null){
 		String SLBH = PublicDo.getSLBHWithDJB(zs.getYwzh());
-		System.out.println("测试数据，生成的slbh："+SLBH);
+		log.info("※生成的SLBH："+SLBH);
+		System.out.println("※生成的SLBH："+SLBH);
 		String SQRQ =FormateData.subTime(zs.getSjrq());//申请日期--收件日期
 		String BDCZH = zs.getBdczh();//不动产证号--不动产证号
 		String ZSH = zs.getZsh();//证书号--证书号
@@ -515,7 +518,7 @@ public class HandleZS {
 				DoDatabase.getConnNew();
 				DoDatabase.doExecuteUpdate(insDJ_SJD, insDJ_SJD_Params);
 				log.info("导DJ_SJD成功,生成的SLBH(主键)为:"+SLBH);
-				System.out.println("INFO:导DJ_SJD成功,生成的SLBH(主键)为:"+SLBH);
+				System.out.println("※INFO:导DJ_SJD成功,生成的SLBH(主键)为:"+SLBH);
 				rollBacksql.append("delete from dj_sjd where slbh ='"+SLBH+"';\n");
 			} catch (SQLException e) {
 				ZLZT=false;

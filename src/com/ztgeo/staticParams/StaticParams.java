@@ -16,4 +16,7 @@ public class StaticParams {
 	
 	//xml read Quartz time
 	public static String QuartzTime; 
+	
+	//rollbackType 
+	public static String rollbackType;//true=自动回滚 false=手动回滚
 }

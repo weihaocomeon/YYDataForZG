@@ -85,6 +85,8 @@ public class HandleQLR {
 				PublicDo.changeState("fc_qlr", "id", qlr.getID(), ZLZT);
 				log.info("※INFO:回滚语句："+rollBacksql.toString());
 				System.out.println("※INFO:回滚语句："+rollBacksql.toString());
+				//根据回滚语句和回滚方式进行自动回滚
+				PublicDo.rollbackNewD(rollBacksql.toString(),ZLZT);
 				
 			}
 			
@@ -161,8 +163,8 @@ public class HandleQLR {
 		} catch (SQLException e) {
 			ZLZT=false;
 			//可能出现的异常 fj插不进去超过值范围 gyfe(共有份额 插不进去 值太大)//或者主键冲突
-			log.error("※FC_QLR信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
-			System.out.println("※ERROR:FC_QLR信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
+			log.error("※FC_QLR信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败,主键:"+qlr.getID()+"※");
+			System.out.println("※ERROR:FC_QLR信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败,主键:"+qlr.getID()+"※");
 			PublicDo.writeLogT("FC_QLR",qlr.getID(),"DJ_QLR",e.getLocalizedMessage());
 		}finally{
 			DoDatabase.closeResource();

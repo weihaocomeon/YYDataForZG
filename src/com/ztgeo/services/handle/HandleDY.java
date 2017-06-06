@@ -76,8 +76,8 @@ public class HandleDY {
 			PublicDo.changeState("fc_dyxx", "BDCDYSLBH", dy.getBdcdyslbh(), ZLZT);	
 			log.info("※回滚语句："+rollBacksql.toString());
 			System.out.println("※INFO:回滚语句："+rollBacksql.toString());
-			
-			
+			//根据回滚语句和回滚方式进行自动回滚
+			PublicDo.rollbackNewD(rollBacksql.toString(),ZLZT);
 		}
 	}
 	
