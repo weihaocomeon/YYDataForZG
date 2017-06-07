@@ -14,16 +14,14 @@ import com.ztgeo.staticParams.StaticParams;
 //读取xml
 public class ReadXml {
 	static Logger log = Logger.getLogger(ReadXml.class);
-	//!地址暂时写死 后期更改
-	public static String xmlLoclPath ="D:\\setProperty.xml";
-	
-	public static void readXmlProperty(){
+	//!地址暂时写死 后期更改	
+	public static void readXmlProperty(String path){
 		SAXReader reader = new SAXReader();
 		//声明xml文档
 		Document doc = null;
 		//读取获得对象
 		try {
-		doc = reader.read(new File(xmlLoclPath));
+		doc = reader.read(new File(path+"\\setProperty.xml"));
 		Element root = doc.getRootElement();
 		//获得所有根节点下的子节点集合
 		List<Element> elements = root.elements();

@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -28,13 +29,14 @@ import org.apache.log4j.Logger;
 
 import com.ztgeo.services.Services;
 import com.ztgeo.services.handle.HandleDY;
+import com.ztgeo.staticParams.StaticParams;
 import com.ztgeo.utils.Quartz;
 import com.ztgeo.utils.ReadXml;
 
 import oracle.sql.DATE;
 
 public class Main extends Thread {
-	static Logger log = Logger.getLogger(Main.class);
+	Logger log = Logger.getLogger(Main.class);
 	JFrame jf;
 	JPanel jpanel;
 	JButton jb1, jb2, jb3;
@@ -106,15 +108,27 @@ public class Main extends Thread {
 			System.out.println("※程序启动中-----※"+dateS);
 			log.info("※程序启动中-----※"+dateS);
 			//read xml for static property
-			ReadXml.readXmlProperty();
+			
 			//调用定时程序
 			//Quartz.startQuartz();
 			//c用来测试
-			Services service = new Services();
+			File directory = new File("..");//设定为当前文件夹 
+			String path="";
+			
+			
+		    path = directory.getAbsolutePath();//获取标准的路径 
+		   
+		    //jar包状态 该目录可以用
+		    //String newPath = path.replace("\\..", "");
+			//ReadXml.readXmlProperty(newPath);
+		   
+		    //开发环境 该目录可用
+		    ReadXml.readXmlProperty(path);
+			/*Services service = new Services();
 			service.handleZS();  
 			service.handleQLR();            
 			service.handleFJ();                                               
-			service.handleDY(); 
+			service.handleDY(); */
 			System.out.println("※程序运行结束----※");
 			log.info("※程序运行结束----※");
 			

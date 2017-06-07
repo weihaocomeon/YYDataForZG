@@ -11,6 +11,9 @@ public class StaticParams {
 	public static String password2;
 	public static String url2; 
 	
+	//log path
+	public static String logpath ;
+	
 	//xml read path
 	public static String xmlPath;
 	
