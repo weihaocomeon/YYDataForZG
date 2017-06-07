@@ -108,8 +108,6 @@ public class Main extends Thread {
 			log.info("※程序启动中-----※"+dateS);
 			//read xml for static property
 			
-			//调用定时程序
-			//Quartz.startQuartz();
 			//c用来测试
 			File directory = new File("..");//设定为当前文件夹 
 			String path="";
@@ -121,23 +119,31 @@ public class Main extends Thread {
 		    //String newPath = path.replace("\\..", "");
 			//ReadXml.readXmlProperty(newPath);
 		   
-		    //开发环境 该目录可用
+		  //开发环境 该目录可用
 		    ReadXml.readXmlProperty(path);
-			/*Services service = new Services();
-			service.handleZS();  
-			service.handleQLR();            
-			service.handleFJ();                                               
-			service.handleDY(); */
-			System.out.println("※程序运行结束----※");
-			log.info("※程序运行结束----※");
+		    
+			//调用定时程序
+			if("true".equals(StaticParams.isUseQuartz)){//启动定时程序
+				 Quartz.startQuartz();
+			}else{
+				/*Services service = new Services();
+				service.handleZS();  
+				service.handleQLR();            
+				service.handleFJ();                                               
+				service.handleDY(); */
+				System.out.println("※程序运行结束----※");
+				log.info("※程序运行结束----※");
+			}
+		   
+		    
+			
+			
 			
 	}
 
 	public static void main(String[] args) {
 		new SystemPrintln();
-		new Main();
-		
-		
+		Main m = new Main();
 	}
 }
 

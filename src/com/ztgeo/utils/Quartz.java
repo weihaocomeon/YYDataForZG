@@ -1,5 +1,7 @@
 package com.ztgeo.utils;
 
+
+import org.apache.log4j.Logger;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -11,17 +13,16 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-
 import com.ztgeo.services.Services;
 import com.ztgeo.staticParams.StaticParams;
 
 //定时程序
 public class Quartz implements Job {
+	Logger log = Logger.getLogger(Quartz.class);
 	//声明变量 读取xml
 	public static void startQuartz(){
 		try {
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-			
 			//任务具体
 			JobDetail job = JobBuilder.newJob(Quartz.class).withIdentity("job1","group1").build();
 			//触发器
@@ -32,16 +33,23 @@ public class Quartz implements Job {
 			scheduler.start();
 			System.out.println("方法准备执行!请确保配置的启动时间有效!");
 		} catch (SchedulerException e) {
+			e.printStackTrace();
 			System.out.println("定时程序报错,请检查执行时间格式是否正确!!");
 		}
 	}
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		System.out.println("执行成功!");
 		//执行service类
+		/*Services service = new Services();
+		service.handleZS();  
+		service.handleQLR();            
+		service.handleFJ();                                               
+		service.handleDY();*/
+	    System.out.println("※程序运行结束----※");
+		log.info("※程序运行结束----※");
 		
-		
+
 		
 	}
 }

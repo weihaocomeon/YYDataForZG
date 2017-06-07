@@ -52,6 +52,9 @@ public class ReadXml {
 		case "rollbackType":
 			StaticParams.rollbackType = e.getText();
 			break;
+		case "isUseQuartz":
+			StaticParams.isUseQuartz = e.getText();
+			break;
 		default:
 			break;
 		}

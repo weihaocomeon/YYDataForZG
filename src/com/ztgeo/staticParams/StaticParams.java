@@ -17,6 +17,9 @@ public class StaticParams {
 	//xml read path
 	public static String xmlPath;
 	
+	//xml is use Quartz
+	public static String isUseQuartz;
+	
 	//xml read Quartz time
 	public static String QuartzTime; 
 	
