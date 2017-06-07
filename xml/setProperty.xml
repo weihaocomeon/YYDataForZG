@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF8"?>
+<root>
+	<!--配置串联库参数-->
+	<username1>bdcfck</username1>
+	<password1>bdcfck</password1>
+	<url1>jdbc:oracle:thin:@172.18.0.147:1521:bdctestsvr</url1>
+
+	<username2>xzbdcsxk</username2>
+	<password2>xzbdcsxk</password2>
+	<url2>jdbc:oracle:thin:@172.18.0.147:1521:bdctestsvr</url2>
+
+	<!--数据回滚的方式-->
+	<rollbackType>true</rollbackType>
+</root>
+
