@@ -1,5 +1,6 @@
 package com.ztgeo.services.handle;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,6 +36,16 @@ public class PublicDo {
 	//属性库中查看是否存在特定的信息 新库中是否有信息
 	public static int isHaveData(String tableName,String columName,String value){
 		String sql = "select count(1) from "+tableName+" where "+columName+" = '"+value+"'";
+		DoDatabase.getConnNew();
+		int count = DoDatabase.getCount(sql);
+		DoDatabase.closeResource();
+		DoDatabase.closeConn();
+		return count;
+	}
+	
+	//属性库中查看是否存在特定的信息 新库中是否有信息并且是否在现实状态
+	public static int isHaveDataByL(String tableName,String columName,String value){
+		String sql = "select count(1) from "+tableName+" where "+columName+" = '"+value+"' and (lifecycle<>1 or lifecycle is null)";
 		DoDatabase.getConnNew();
 		int count = DoDatabase.getCount(sql);
 		DoDatabase.closeResource();
@@ -231,20 +242,35 @@ public class PublicDo {
 			//for循环语句并进行回滚
 			for (String roll : rollbacks) {
 				//进行数据回滚
-				DoDatabase.getConnNew();
+				Connection conn = DoDatabase.getConnNew();
+				try {
+					conn.setAutoCommit(false);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 				try {
 				count =	DoDatabase.doExecuteUpdate(roll, new Object[0]);
 				//回滚结果条数有误
 				if(count!=1){
 					blag=false;
-					log.error("※属性库根据主键进行数据回滚时得到的结果不唯一：应为1条,实际为:"+count+"条,执行的SQL:"+roll);
-					System.out.println("※ERROR:属性库根据主键进行数据回滚时得到的结果不唯一：应为1条,实际为:"+count+"条,执行的SQL:"+roll);
+					conn.rollback();
+					log.error("※属性库根据主键进行数据回滚时得到的结果不唯一：应为1条,实际为:"+count+"条,执行的SQL:"+roll+"回滚未提交,请检查");
+					System.out.println("※ERROR:属性库根据主键进行数据回滚时得到的结果不唯一：应为1条,实际为:"+count+"条,执行的SQL:"+roll+"回滚未提交,请检查");
+				}else{
+					conn.commit();
+					log.info("※该条回滚状态:成功!※");
+					System.out.println("※INFO:该条回滚状态:成功!※");
 				}
 				} catch (SQLException e) {
 					blag=false;
 					log.error("※属性库数据回滚时发生异常:"+e.getLocalizedMessage()+"执行的SQL:"+roll);
 					System.out.println("※属性库ERROR数据回滚时发生异常:"+e.getLocalizedMessage()+"执行的SQL:"+roll);
 				}finally {
+					try {
+						conn.setAutoCommit(true);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 					DoDatabase.closeResource();
 					DoDatabase.closeConn();
 				}

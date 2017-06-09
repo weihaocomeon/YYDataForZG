@@ -40,6 +40,8 @@ public class HandleZS {
 		for (ZS zs : ZSList) {
 			rollBacksql.setLength(0);//回滚语句的清空
 			ZLZT=true;
+			log.info("");
+			log.info("");
 			log.info("※※※※FC_ZSXX 受理编号:"+zs.getSlbh()+"※※※※");
 			System.out.println("\n\n※※※※※※※※※※※※FC_ZSXX 受理编号:"+zs.getSlbh()+"※※※※※※※※※※※※\n");
 			
@@ -103,17 +105,17 @@ public class HandleZS {
 				}
 				
 				
-			}else{
-				log.error("※DJ_DJB的导入失败,已暂停对其他表的导入工作※");
-				System.out.println("※ERROR:DJ_DJB的导入失败,已暂停对其他表的导入工作※");
 			}
 			//有数据失败 给出回滚语句并把增量状态进行改变
 			PublicDo.changeState("fc_zsxx", "slbh", zs.getSlbh(), ZLZT);
 			log.error("※数据回滚语句:"+rollBacksql.toString()+"※");
-			System.out.println("※INFO:数据回滚语句:"+rollBacksql.toString()+"※");
+			System.out.println("※INFO:数据回滚语句:\n"+rollBacksql.toString()+"※");
 			//根据回滚语句和回滚方式进行自动回滚
 			PublicDo.rollbackNewD(rollBacksql.toString(),ZLZT);
-					}
+			//数据状态
+			log.info("※该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
+			System.out.println("※INFO:该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
+		}
 	}
 	
 
@@ -135,17 +137,22 @@ public class HandleZS {
 				toInsertDJ_DJB(zs);
 			};//没有有效信息 可以直接导入
 			
-			if(SLBHS.size()==1){//有一条现实状态的权属信息，需要被置为历史
+			if(SLBHS.size()==1){//有一条现实状态的权属信息，需要被置为历史 tsgl中也要被置为历史
 				log.info("※DJ_DJB中发现有一条现实权属信息，准备将该条权属信息置为历史※");
 				System.out.println("※INFO:DJ_DJB中发现有一条现实权属信息，准备将该条权属信息置为历史※");
-				toSetLifeCycle(SLBHS.get(0));
-				if(ZLZT){	
-					toInsertDJ_DJB(zs);
+				//需要判断是否是多户办理业务
+				isManyHinfo(SLBHS.get(0),zs.getHouseinfoId());
+				if(ZLZT){
+					toInsertDJ_DJB(zs); 
+					//插入dj_xgdjgl
+					if(ZLZT){
+					toInsertDJ_XGDJGL(SLBHS.get(0),zs);
+					}
 				}
 			}
-			if(SLBHS.size()>1){
+			if(SLBHS.size()>1){//出现这种情况 xgdjgl无法进行导入
 				log.error("※警告：DJ_DJB中发现有多条现实权属信息，需要人工干涉处理，DJB继续导入。。※");
-				System.out.println("※WARRING：DJ_DJB中发现有多条现实权属信息，需要人工干涉处理，DJB继续导入。。※");
+				System.out.println("※WARRING：DJ_DJB中发现有多条现实权属信息，需要人工干涉处理，DJB继续导入。。但会忽略DJ_XGDJGL的导入※");
 				toInsertDJ_DJB(zs);
 			}
 			
@@ -153,6 +160,63 @@ public class HandleZS {
 		}
 		
 			
+	}
+
+	private void toInsertDJ_XGDJGL(String FSLBH, ZS zs) {
+		log.info("※准备导入DJ_XGDJGL※");
+		System.out.println("※INFO:准备导入DJ_XGDJGL※");
+		String BGBM = UUID.randomUUID().toString();//变更编码 随机生成
+		String ZSLBH =PublicDo.getSLBHWithDJB(zs.getYwzh());
+		String BGRQ = FormateData.subTime(zs.getDbrq());//变更日期--登簿日期
+		String BGLX = zs.getDjlx();//变更类型--收件-登记类型
+		//相关证号是上一首业务的bdczh
+		String XGZH = PublicDo.getDataNew("bdczh", "dj_djb", "slbh", FSLBH);//上一手业务的bdczh不动产证号
+		String XGZLX = "房屋不动产证";
+		Object insDJ_XGDJGL[] = new Object[7];
+		insDJ_XGDJGL[0] =BGBM;
+		insDJ_XGDJGL[1] =ZSLBH;
+		insDJ_XGDJGL[2] =FSLBH;
+		insDJ_XGDJGL[3] =BGRQ;
+		insDJ_XGDJGL[4] =BGLX;
+		insDJ_XGDJGL[5] =XGZH;
+		insDJ_XGDJGL[6] =XGZLX;
+		
+		String insDJ_XGDJGL_Sql = "insert into dj_xgdjgl(bgbm,zslbh,fslbh,bgrq,bglx,xgzh,xgzlx,transnum)values(?,?,?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),?,?,?,57)";
+
+		try {
+			DoDatabase.getConnNew();
+			DoDatabase.doExecuteUpdate(insDJ_XGDJGL_Sql, insDJ_XGDJGL);
+			log.info("※DJ_XGDJGL信息导入成功生成的BGBM(主键)为:"+BGBM+"※");
+			System.out.println("※DJ_XGDJGL信息导入成功生成的BGBM(主键)为:"+BGBM+"※");
+			rollBacksql.append("delete from dj_xgdjgl where bgbm ='"+BGBM+"';\n");
+		} catch (SQLException e) {
+			ZLZT=false;
+			log.error("※DJ_XGDJGL信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
+			System.out.println("※ERROR:DJ_XGDJGL信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
+			PublicDo.writeLogT("FC_ZSXX",zs.getSlbh(),"DJ_XGDJGL",e.getLocalizedMessage());
+		}finally {
+			DoDatabase.closeResource();
+			DoDatabase.closeConn();
+		}
+		
+	}
+
+	private void isManyHinfo(String slbh,String tstybm) {
+		log.info("※正在查询是否是多户权属※");
+		System.out.println("※INFO:正在查询是否是多户权属※");
+		DoDatabase.getConnNew();
+		int count =PublicDo.isHaveDataByL("dj_tsgl", "slbh",slbh);
+		if(count>1){//是多户
+			log.info("※查询到是多户权属※");
+			System.out.println("※INFO:查询到是多户权属※");
+			toSetLifeCycle_tsgl(slbh,tstybm);//这边有一个遗留问题 如果是地下室 如何处理
+		}else{//单户 可以将dj_djb置为历史
+			log.info("※查询到是单户权属※");
+			System.out.println("※INFO:查询到是单户权属※");
+			//将djb直接置为历史
+			toSetLifeCycle(slbh);
+			toSetLifeCycle_tsgl(slbh,tstybm);
+		}
 	}
 
 	private void toSetLifeCycle(String SLBH) {
@@ -169,8 +233,35 @@ public class HandleZS {
 			log.error("※DJ_DJB现实状态置为历史是发生错误"+e.getLocalizedMessage()+"导致更新历史状态失败※");
 			System.out.println("※ERROR:DJ_DJB现实状态置为历史是发生错误"+e.getLocalizedMessage()+"导致更新历史状态失败※");
 			PublicDo.writeLogT("DJ_DJB",SLBH,"DJ_DJB(SLBH)","DJ_DJB现实状态置为历史是发生错误"+e.getLocalizedMessage());
+		}finally {
+			DoDatabase.closeResource();
+			DoDatabase.closeConn();
 		}
+		
+		
 	}
+	
+	
+	private void toSetLifeCycle_tsgl(String SLBH,String TSTYBM){
+		DoDatabase.getConnNew();
+		String sql = "update dj_tsgl set lifecycle=1 where slbh='"+SLBH+"' and tstybm = '"+TSTYBM+"'";
+		try {
+			DoDatabase.doExecuteUpdate(sql, new Object[0]);
+			log.info("※DJ_TSGL信息更新历史状态成功，SLBH为:"+SLBH+",TSTYBM为:"+TSTYBM+"※");
+			System.out.println("※INFO:DJ_TSGL信息更新历史状态成功，SLBH为:"+SLBH+",TSTYBM为:"+TSTYBM+"※");
+			rollBacksql.append("update dj_tsgl set lifecycle=0 where slbh='"+SLBH+"' and tstybm = '"+TSTYBM+"';\n");
+		} catch (SQLException e) {
+			ZLZT=false;
+			//可能出现的异常 fj插不进去超过值范围 gyfe(共有份额 插不进去 值太大)//或者主键冲突
+			log.error("※DJ_TSGL现实状态置为历史时发生错误"+e.getLocalizedMessage()+"导致更新历史状态失败※");
+			System.out.println("※ERROR:DJ_TSGL现实状态置为历史时发生错误"+e.getLocalizedMessage()+"导致更新历史状态失败※");
+			PublicDo.writeLogT("DJ_TSGL","SLBH:"+SLBH+"TSTYBM:"+TSTYBM,"DJ_TSGL","DJ_DJB现实状态置为历史时发生错误"+e.getLocalizedMessage());
+		}finally {
+			DoDatabase.closeResource();
+			DoDatabase.closeConn();
+		}
+		
+	} 
 
 	private void toInsertQL_FWXG(ZS zs) {
 		String QLBH =UUID.randomUUID().toString();
@@ -388,9 +479,9 @@ public class HandleZS {
 		String FZND = zs.getFznd();//发证年度--发证年度
 		String ZSLX = "房屋不动产证";//证书类型
 		String DYCS = zs.getDycs();//打印次数--打印次数
-		String XGZH = zs.getQzbhqc()+"、"+zs.getTdzh();
+		//String XGZH ="";//待定////////////////////////////////////////////////////////////////
 		
-		Object[] insDJ_DJBParams = new String[21];
+		Object[] insDJ_DJBParams = new String[20];
 		
 		insDJ_DJBParams[0]=SLBH;
 		insDJ_DJBParams[1]=SQRQ;
@@ -412,11 +503,10 @@ public class HandleZS {
 		insDJ_DJBParams[17]=FZND;
 		insDJ_DJBParams[18]=ZSLX;
 		insDJ_DJBParams[19]=DYCS;
-		insDJ_DJBParams[20]=XGZH;
 		log.info("※准备导入DJ_DJB※");
 		System.out.println("※INFO:准备导入DJ_DJB※");
 		
-		String insDJ_DJB = "insert into dj_djb (slbh,sqrq,bdczh,zsh,gyfs,gyfe,djrq,dbr,fzjg,fzrq,zsxlh,fj,bdcdyh,szr,qt,ssjc,jgjc,fznd,zslx,dycs,xgzh,transnum) values(?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),?,?,?,?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),?,?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),?,?,?,?,?,?,?,?,?,?,?,57)";
+		String insDJ_DJB = "insert into dj_djb (slbh,sqrq,bdczh,zsh,gyfs,gyfe,djrq,dbr,fzjg,fzrq,zsxlh,fj,bdcdyh,szr,qt,ssjc,jgjc,fznd,zslx,dycs,transnum) values(?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),?,?,?,?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),?,?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),?,?,?,?,?,?,?,?,?,?,57)";
 		try {
 			DoDatabase.getConnNew();
 			DoDatabase.doExecuteUpdate(insDJ_DJB, insDJ_DJBParams);

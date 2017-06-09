@@ -126,11 +126,11 @@ public class Main extends Thread {
 			if("true".equals(StaticParams.isUseQuartz)){//启动定时程序
 				 Quartz.startQuartz();
 			}else{
-				/*Services service = new Services();
+				Services service = new Services();
 				service.handleZS();  
-				service.handleQLR();            
-				service.handleFJ();                                               
-				service.handleDY(); */
+				//service.handleQLR();            
+				//service.handleFJ();                                               
+				//service.handleDY(); 
 				System.out.println("※程序运行结束----※");
 				log.info("※程序运行结束----※");
 			}

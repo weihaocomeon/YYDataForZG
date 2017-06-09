@@ -73,6 +73,9 @@ public class HandleFJ {
 			System.out.println("※INFO:回滚语句："+rollBacksql.toString());
 			//根据回滚语句和回滚方式进行自动回滚
 			PublicDo.rollbackNewD(rollBacksql.toString(),ZLZT);
+			//数据状态
+			log.info("※该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
+			System.out.println("※INFO:该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
 		}
 	}
 

@@ -42,14 +42,15 @@ public class HandleDY {
 			ZLZT=true;
 			log.info("");
 			log.info("");
-			log.info("\n※※※※FC_DYXX BDCDYSLBH:"+dy.getBdcdyslbh()+"※※※※");
-			System.out.println("\n\n※※※※※※※※※※※※FC_DYXX BDCDYSLBH:"+dy.getBdcdyslbh()+"※※※※※※※※※※※※\n");
+			log.info("\n※※※※FC_DYXX BDCDYSLBH:"+dy.getFcdyslbh()+"※※※※");
+			System.out.println("\n\n※※※※※※※※※※※※FC_DYXX BDCDYSLBH:"+dy.getFcdyslbh()+"※※※※※※※※※※※※\n");
 			//查询FC_H_QSDC中是否有该房子 如果有才可以抵押 如果没有 不允许抵押
 			//判断houseinfo_id是否为空 如果为空 不允许导入（绝对没有户信息）
 			if(PublicDo.isHaveData("FC_H_QSDC", "TSTYBM", dy.getHouseinfo_id())>0){//这边有个诡异的问题，明明不一样却能匹配 后期撤查
 				log.info("※查询到该查封在FC_H_QSDC中有户信息存在，准备导入DJ_DY※");
 				System.out.println("※INFO:查询到该查封在FC_H_QSDC中有户信息存在，准备导入DJ_DY※");
-				insertDJ_DY(dy);
+				//查看是否可以抵押
+				isCanInsert_DY(dy);
 				//执行结束后再次对状态判断 如果状态正常 则继续导入
 				if(ZLZT){
 					//导入DJ_SJD
@@ -70,17 +71,51 @@ public class HandleDY {
 				log.error("※未查询到该查封户在FC_H_QSDC中存在有效信息，可能的情况是：1.确实无权属关系，2.houseinfo_id为空，导致导入失败...※");
 				System.out.println("※ERROR:未查询到该查封户在FC_H_QSDC中存在有效信息，可能的情况是：1.确实无权属关系，2.houseinfo_id为空，导致导入失败...※");
 				ZLZT = false;
-				PublicDo.writeLogT("FC_DYXX", dy.getBdcdyslbh(), "DJ_DY", "未查询到该查封户在FC_H_QSDC中存在有效信息，可能的情况是：1.确实无权属关系，2.houseinfo_id为空导致导入失败...");
+				PublicDo.writeLogT("FC_DYXX", dy.getFcdyslbh(), "DJ_DY", "未查询到该查封户在FC_H_QSDC中存在有效信息，可能的情况是：1.确实无权属关系，2.houseinfo_id为空导致导入失败...");
 			}
 			//判断状态码 进行改变数据状态
-			PublicDo.changeState("fc_dyxx", "BDCDYSLBH", dy.getBdcdyslbh(), ZLZT);	
+			PublicDo.changeState("fc_dyxx", "BDCDYSLBH", dy.getFcdyslbh(), ZLZT);	
 			log.info("※回滚语句："+rollBacksql.toString());
 			System.out.println("※INFO:回滚语句："+rollBacksql.toString());
 			//根据回滚语句和回滚方式进行自动回滚
 			PublicDo.rollbackNewD(rollBacksql.toString(),ZLZT);
+			
+			//数据状态
+			log.info("※该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
+			System.out.println("※INFO:该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
 		}
 	}
 	
+	private void isCanInsert_DY(DY dy) {
+
+		if(dy.getHouseinfo_id()==null||"".equals(dy.getHouseinfo_id())){
+			log.error("※该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...※");
+			System.out.println("※ERROR:该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...※");
+			ZLZT =false;
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY","该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...");
+		}else{
+			//查询是否有历史数据
+			String sql = "select slbh from dj_dy d where slbh in (select slbh from dj_tsgl where tstybm='"+dy.getHouseinfo_id()+"') and (d.lifecycle<>1 or d.lifecycle is null)";
+			//执行获得slbhs
+			List<String> SLBHS = PublicDo.getSLBHS(sql);
+			if(SLBHS.size()==0){
+				log.info("※DJ_DY中未发现现实状态的抵押信息，准备导入DJ_DY※");
+				System.out.println("※INFO:DJ_DY中未发现现实状态的抵押信息，准备导入DJ_DY※");
+				insertDJ_DY(dy);
+			};//没有有效信息 可以直接导入
+			
+			if(SLBHS.size()>=1){
+				log.error("※DJ_DY中发现存在现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
+				System.out.println("※ERROR:DJ_DY中发现存在现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
+				PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY","DJ_DY中发现存在现实抵押信息，不允许被抵押");
+				ZLZT =false;
+			}
+		}
+		
+	}
+
+
+
 	public void insertQLR(DY dy){
 		boolean insDJ_QLR1= true;//抵押人导入状态
 		boolean insDJ_QLR2 = true;//抵押权人导入状态
@@ -126,7 +161,7 @@ public class HandleDY {
 			//可能出现的异常 fj插不进去超过值范围 gyfe(共有份额 插不进去 值太大)//或者主键冲突
 			log.error("※FC_QLR(抵押人)信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败，已停止QLRGL的导入※");
 			System.out.println("※ERROR:FC_QLR(抵押人)信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败，已停止QLRGL的导入※");
-			PublicDo.writeLogT("FC_DYXX",dy.getBdcdyslbh(),"DJ_QLR",e.getLocalizedMessage());
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_QLR",e.getLocalizedMessage());
 		}finally{
 			DoDatabase.closeResource();
 			DoDatabase.closeConn();
@@ -147,7 +182,7 @@ public class HandleDY {
 			//可能出现的异常 fj插不进去超过值范围 gyfe(共有份额 插不进去 值太大)//或者主键冲突
 			log.error("※FC_QLR(抵押权人)信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败，已停止QLRGL的导入※");
 			System.out.println("※ERROR:FC_QLR(抵押权人)信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败，已停止QLRGL的导入※");
-			PublicDo.writeLogT("FC_DYXX",dy.getBdcdyslbh(),"DJ_QLR",e.getLocalizedMessage());
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_QLR",e.getLocalizedMessage());
 		}finally{
 			DoDatabase.closeResource();
 			DoDatabase.closeConn();
@@ -190,7 +225,7 @@ public class HandleDY {
 			ZLZT=false;
 			log.error("※FC_QLRGL(抵押人)信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
 			System.out.println("※ERROR:FC_QLR(抵押人)信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
-			PublicDo.writeLogT("FC_DYXX",dy.getBdcdyslbh(),"DJ_QLRGL(DYR)",e.getLocalizedMessage());
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_QLRGL(DYR)",e.getLocalizedMessage());
 		}finally{
 			DoDatabase.closeResource();
 			DoDatabase.closeConn();
@@ -226,7 +261,7 @@ public class HandleDY {
 			ZLZT=false;
 			log.error("※FC_QLRGL(抵押权人)信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
 			System.out.println("※ERROR:FC_QLR(抵押权人)信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
-			PublicDo.writeLogT("FC_DYXX",dy.getBdcdyslbh(),"DJ_QLRGL(DYQR)",e.getLocalizedMessage());
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_QLRGL(DYQR)",e.getLocalizedMessage());
 		}finally{
 			DoDatabase.closeResource();
 			DoDatabase.closeConn();
@@ -239,7 +274,7 @@ public class HandleDY {
 		//查找到几条插入几条 如果都查找不到 插入空数据 后期需要维护
 		String SLBH="";
 		boolean isNull=false;
-		//查找bdczh
+		//查找bdczh 前提是bdczh不为空(目前没有为空的数据)
 		if(PublicDo.isHaveData("dj_djb", "bdczh", dy.getBdczh())>0){//bdcdyh有数据
 			//如果拿到两条怎么办
 			SLBH = PublicDo.getDataNew("slbh", "dj_djb", "bdczh", dy.getBdczh());
@@ -266,10 +301,10 @@ public class HandleDY {
 		}
 		//判断如果状态值还是没有有效信息则提示
 		if(!isNull){
-			log.error("※查询到该DY信息的bdczh在DJ_DJB中无对应信息，导致导入失败※");
-			System.out.println("※WARRING:查询到该DY信息的bdczh在DJ_DJB中无对应信息，导致导入失败※");
+			log.error("※查询到该DY信息的bdczh在DJ_DJB中无对应信息，导致导入DJ_XGDJGL失败※");
+			System.out.println("※ERROR:查询到该DY信息的bdczh在DJ_DJB中无对应信息，导致导入DJ_XGDJGL失败※");
 			ZLZT=false;
-			PublicDo.writeLogT("FC_DYXX",dy.getBdcdyslbh(),"DJ_XGDJGL","查询到该DY信息的bdczh在DJ_DJB中无对应信息，导致导入失败");
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_XGDJGL","查询到该DY信息的bdczh在DJ_DJB中无对应信息，导致导入失败");
 		}
 		
 	}
@@ -306,7 +341,7 @@ public class HandleDY {
 			//可能出现的异常 fj插不进去超过值范围 gyfe(共有份额 插不进去 值太大)//或者主键冲突
 			log.error("※DJ_XGDJGL信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
 			System.out.println("※ERROR:DJ_XGDJGL信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
-			PublicDo.writeLogT("FC_DYXX",dy.getBdcdyslbh(),"DJ_XGDJGL",e.getLocalizedMessage());
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_XGDJGL",e.getLocalizedMessage());
 		}finally {
 			DoDatabase.closeResource();
 			DoDatabase.closeConn();
@@ -345,7 +380,7 @@ public class HandleDY {
 			//可能出现的异常 fj插不进去超过值范围 gyfe(共有份额 插不进去 值太大)//或者主键冲突
 			log.error("※DJ_TSGL信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
 			System.out.println("※ERROR:DJ_TSGL信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
-			PublicDo.writeLogT("FC_DYXX",dy.getBdcdyslbh(),"DJ_TSGL",e.getLocalizedMessage());
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_TSGL",e.getLocalizedMessage());
 		}finally {
 			DoDatabase.closeResource();
 			DoDatabase.closeConn();
@@ -354,7 +389,7 @@ public class HandleDY {
 	}
 	private void insertDJ_SJD(DY dy) {
 			log.info("※准备导入DJ_SJD※");
-			System.out.println("INFO:※准备导入DJ_SJD※");
+			System.out.println("※INFO:※准备导入DJ_SJD※");
 			Object[] insDJ_SJD_Params = new String[8];
 			String SLBH = PublicDo.getSLBHWithDY(dy.getDatafrom(), dy.getFcdyslbh());
 			String DJXL = dy.getDjlx();//登记小类--登记类型
@@ -390,7 +425,7 @@ public class HandleDY {
 				//sql有问题时进行捕捉并保存到数据库 
 				log.error("※导入DJ_SJD时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
 				System.out.println("※ERROR:导入DJ_SJD时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
-				PublicDo.writeLogT("FC_DYXX",dy.getBdcdyslbh(),"DJ_SJD",e.getLocalizedMessage());
+				PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_SJD",e.getLocalizedMessage());
 			}finally {
 				DoDatabase.closeResource();
 				DoDatabase.closeConn();
@@ -475,7 +510,7 @@ public class HandleDY {
 			System.out.println("※ERROR:DJ_DY信息导入时发生错误:"+e.getLocalizedMessage()+"导致导入失败※");
 			log.info("※DJ_DY导入失败，已停止其他DY相关表的导入工作※");
 			System.out.println("※ERROR:DJ_DY导入失败，已停止其他DY相关表的导入工作※");
-			PublicDo.writeLogT("FC_DYXX",dy.getBdcdyslbh(),"DJ_DY",e.getLocalizedMessage());
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY",e.getLocalizedMessage());
 		}finally {
 			DoDatabase.closeResource();
 			DoDatabase.closeConn();
