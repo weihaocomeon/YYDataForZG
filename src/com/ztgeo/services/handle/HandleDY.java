@@ -42,39 +42,46 @@ public class HandleDY {
 			ZLZT=true;
 			log.info("");
 			log.info("");
-			log.info("\n※※※※FC_DYXX BDCDYSLBH:"+dy.getFcdyslbh()+"※※※※");
+			log.info("\n※※※※FC_DYXX FCDYSLBH:"+dy.getFcdyslbh()+"※※※※");
 			System.out.println("\n\n※※※※※※※※※※※※FC_DYXX BDCDYSLBH:"+dy.getFcdyslbh()+"※※※※※※※※※※※※\n");
 			//查询FC_H_QSDC中是否有该房子 如果有才可以抵押 如果没有 不允许抵押
-			//判断houseinfo_id是否为空 如果为空 不允许导入（绝对没有户信息）
-			if(PublicDo.isHaveData("FC_H_QSDC", "TSTYBM", dy.getHouseinfo_id())>0){//这边有个诡异的问题，明明不一样却能匹配 后期撤查
-				log.info("※查询到该查封在FC_H_QSDC中有户信息存在，准备导入DJ_DY※");
-				System.out.println("※INFO:查询到该查封在FC_H_QSDC中有户信息存在，准备导入DJ_DY※");
-				//查看是否可以抵押
-				isCanInsert_DY(dy);
-				//执行结束后再次对状态判断 如果状态正常 则继续导入
-				if(ZLZT){
-					//导入DJ_SJD
-					insertDJ_SJD(dy);
-					//导入DJ_TSGL
-					if(ZLZT)
-					insertDJ_TSGL(dy);
-					//导入DJ_XGDJGL
-					if(ZLZT)
-					insertDJ_XGDJGL(dy);
-					//导入DJ_QLR(两张表)
-					if(ZLZT)
-					insertQLR(dy);
-					//导入DJ_QLRGL(两张表)
-				}
+			if(dy.getHouseinfo_id()==null||"".equals(dy.getHouseinfo_id())){
+				log.error("※该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...※");
+				System.out.println("※ERROR:该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...※");
+				ZLZT =false;
+				PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY","该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...");
 			}else{
-				//说明无权属信息 ，暂时不需要导入
-				log.error("※未查询到该查封户在FC_H_QSDC中存在有效信息，可能的情况是：1.确实无权属关系，2.houseinfo_id为空，导致导入失败...※");
-				System.out.println("※ERROR:未查询到该查封户在FC_H_QSDC中存在有效信息，可能的情况是：1.确实无权属关系，2.houseinfo_id为空，导致导入失败...※");
-				ZLZT = false;
-				PublicDo.writeLogT("FC_DYXX", dy.getFcdyslbh(), "DJ_DY", "未查询到该查封户在FC_H_QSDC中存在有效信息，可能的情况是：1.确实无权属关系，2.houseinfo_id为空导致导入失败...");
+				//判断houseinfo_id是否为空 如果为空 不允许导入（绝对没有户信息）
+				if(PublicDo.isHaveData("FC_H_QSDC", "TSTYBM", dy.getHouseinfo_id())>0){
+					log.info("※查询到该查封在FC_H_QSDC中有户信息存在，准备导入DJ_DY※");
+					System.out.println("※INFO:查询到该查封在FC_H_QSDC中有户信息存在，准备导入DJ_DY※");
+					//查看是否可以抵押
+					isCanInsert_DY(dy);
+					//执行结束后再次对状态判断 如果状态正常 则继续导入
+					if(ZLZT){
+						//导入DJ_SJD
+						insertDJ_SJD(dy);
+						//导入DJ_TSGL
+						if(ZLZT)
+						insertDJ_TSGL(dy);
+						//导入DJ_XGDJGL
+						
+						//导入DJ_QLR(两张表)
+						if(ZLZT)
+						insertQLR(dy);
+						//导入DJ_QLRGL(两张表)
+					}
+				}else{
+					//说明无权属信息 ，暂时不需要导入
+					log.error("※未查询到该查封户在FC_H_QSDC中存在有效信息，导致导入失败...※");
+					System.out.println("※ERROR:未查询到该查封户在FC_H_QSDC中存在有效信息，，导致导入失败...※");
+					ZLZT = false;
+					PublicDo.writeLogT("FC_DYXX", dy.getFcdyslbh(), "DJ_DY", "未查询到该查封户在FC_H_QSDC中存在有效信息，，导致导入失败...");
+				}
 			}
+			
 			//判断状态码 进行改变数据状态
-			PublicDo.changeState("fc_dyxx", "BDCDYSLBH", dy.getFcdyslbh(), ZLZT);	
+			PublicDo.changeState("fc_dyxx", "FCDYSLBH", dy.getFcdyslbh(), ZLZT);	
 			log.info("※回滚语句："+rollBacksql.toString());
 			System.out.println("※INFO:回滚语句："+rollBacksql.toString());
 			//根据回滚语句和回滚方式进行自动回滚
@@ -87,13 +94,6 @@ public class HandleDY {
 	}
 	
 	private void isCanInsert_DY(DY dy) {
-
-		if(dy.getHouseinfo_id()==null||"".equals(dy.getHouseinfo_id())){
-			log.error("※该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...※");
-			System.out.println("※ERROR:该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...※");
-			ZLZT =false;
-			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY","该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...");
-		}else{
 			//查询是否有历史数据
 			String sql = "select slbh from dj_dy d where slbh in (select slbh from dj_tsgl where tstybm='"+dy.getHouseinfo_id()+"') and (d.lifecycle<>1 or d.lifecycle is null)";
 			//执行获得slbhs
@@ -102,16 +102,147 @@ public class HandleDY {
 				log.info("※DJ_DY中未发现现实状态的抵押信息，准备导入DJ_DY※");
 				System.out.println("※INFO:DJ_DY中未发现现实状态的抵押信息，准备导入DJ_DY※");
 				insertDJ_DY(dy);
+				if(ZLZT)
+					insertDJ_XGDJGL(dy);
 			};//没有有效信息 可以直接导入
 			
-			if(SLBHS.size()>=1){
-				log.error("※DJ_DY中发现存在现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
-				System.out.println("※ERROR:DJ_DY中发现存在现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
-				PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY","DJ_DY中发现存在现实抵押信息，不允许被抵押");
-				ZLZT =false;
-			}
+		if(SLBHS.size()==1){
+				//判断是不是预告预抵 从xgdjgl中的bglx中判断
+				if(PublicDo.isHaveData("dj_xgdjgl", "zslbh", SLBHS.get(0))==1){
+					
+					if("预告抵押".equals(PublicDo.getDataNew("bglx", "dj_xgdjgl", "zslbh", SLBHS.get(0)))){
+						log.info("※该条抵押是预告抵押※");
+						System.out.println("※INFO:该条抵押是预告抵押※");
+						//预告抵押置为历史
+						String YGSLBH = PublicDo.getDataNew("fslbh", "dj_xgdjgl", "zslbh", SLBHS.get(0));
+						toChangeLife_DJ_YG(YGSLBH,SLBHS.get(0),dy);
+						
+					}
+					
+					else{
+						log.error("※DJ_DY中发现存在现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
+						System.out.println("※ERROR:DJ_DY中发现存在现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
+						PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY","DJ_DY中发现存在现实抵押信息，不允许被抵押");
+						ZLZT =false;
+					}
+				}else{
+					log.error("※DJ_DY中发现存在现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
+					System.out.println("※ERROR:DJ_DY中发现存在现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
+					PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY","DJ_DY中发现存在现实抵押信息，不允许被抵押");
+					ZLZT =false;
+				}
+				
+			
+		}else{
+			log.error("※DJ_DY中发现存在多条现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
+			System.out.println("※ERROR:DJ_DY中发现存在多条现实抵押信息，不允许被抵押,SQL:\n"+sql+"※");
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY","DJ_DY中发现存在多条现实抵押信息，不允许被抵押");
+			ZLZT =false;
 		}
 		
+	}
+
+
+
+	private void toChangeLife_DJ_YG(String SLBH, String DYSLBH, DY dy) {
+		//预告的历史状态修改
+		DoDatabase.getConnNew();
+		String sql = "update dj_yg set lifecycle=1 where slbh='"+SLBH+"'";
+		try {
+			if(DoDatabase.doExecuteUpdate(sql, new Object[0])==1){
+				log.info("※DJ_YG信息更新历史状态成功，SLBH为:"+SLBH+"※");
+				System.out.println("※INFO:DJ_YG信息更新历史状态成功，SLBH为:"+SLBH+"※");
+				rollBacksql.append("update dj_yg set lifecycle=0 where slbh='"+SLBH+"';\n");
+				//状态执行成功后才能进行dj_dy的状态更改
+				toChangeLife_DJ_DY(DYSLBH,SLBH,dy);
+			}else{
+				//说明根据SLBH没有更新到数据 更新了两条的可能性没有 因为SLBH是主键
+				log.error("※DJ_YG无现实预告信息,SQL:\n"+sql+"※");
+				System.out.println("※DJ_YG无现实预告信息,SQL:\n"+sql+"※");
+				ZLZT =false;
+			};
+		} catch (SQLException e) {
+			ZLZT=false;
+			//可能出现的异常 fj插不进去超过值范围 gyfe(共有份额 插不进去 值太大)//或者主键冲突
+			log.error("※DJ_YG现实状态置为历史时发生错误"+e.getLocalizedMessage()+"导致更新历史状态失败※");
+			System.out.println("※ERROR:DJ_YG现实状态置为历史时发生错误"+e.getLocalizedMessage()+"导致更新历史状态失败※");
+			PublicDo.writeLogT("DJ_YGXX","SLBH:"+SLBH,"DJ_YG","DJ_DJB现实状态置为历史时发生错误"+e.getLocalizedMessage());
+		}finally {
+			DoDatabase.closeResource();
+			DoDatabase.closeConn();
+		}
+		
+	}
+
+
+
+	private void toChangeLife_DJ_DY(String SLBH, String YGSLBH, DY dy) {
+		//抵押的历史状态修改
+		DoDatabase.getConnNew();
+		String sql = "update dj_dy set lifecycle=1 where slbh='"+SLBH+"'";
+		try {
+			
+			DoDatabase.doExecuteUpdate(sql, new Object[0]);
+			log.info("※DJ_DY信息更新历史状态成功，SLBH为:"+SLBH+"※");
+			System.out.println("※INFO:DJ_DY信息更新历史状态成功，SLBH为:"+SLBH+"※");
+			rollBacksql.append("update dj_dy set lifecycle=0 where slbh='"+SLBH+"';\n");
+			//成功之后插入dj_xgdjgl
+			insertDJ_DY(dy);
+			if(ZLZT)
+			toInsDJ_XGDJGL_YG(SLBH,YGSLBH,dy);
+		} catch (SQLException e) {
+			ZLZT=false;
+			//可能出现的异常 fj插不进去超过值范围 gyfe(共有份额 插不进去 值太大)//或者主键冲突
+			log.error("※DJ_DY现实状态置为历史时发生错误"+e.getLocalizedMessage()+"导致更新历史状态失败※");
+			System.out.println("※ERROR:DJ_DY现实状态置为历史时发生错误"+e.getLocalizedMessage()+"导致更新历史状态失败※");
+			PublicDo.writeLogT("DJ_DY","SLBH:"+SLBH,"DJ_YG","DJ_DY现实状态置为历史时发生错误"+e.getLocalizedMessage());
+		}finally {
+			DoDatabase.closeResource();
+			DoDatabase.closeConn();
+		}
+		
+	}
+
+
+
+	private void toInsDJ_XGDJGL_YG(String SLBH, String yGSLBH, DY dy) {
+		
+		log.info("※准备导入DJ_XGDJGL※");
+		System.out.println("※INFO:准备导入DJ_XGDJGL※");
+		String BGBM = UUID.randomUUID().toString();//变更编码--随机生成
+		String ZSLBH = yGSLBH;
+		//FSLBH使用传过来的值 
+		String BGRQ = FormateData.subTime(dy.getDbrq());
+		String BGLX = "抵押";
+		//相关证号 根据穿过来的值
+		//相关证类型使用传过来的值
+		Object insDJ_XGDJGL_Params[] = new Object[7];
+		insDJ_XGDJGL_Params[0]=BGBM;
+		insDJ_XGDJGL_Params[1]=PublicDo.getSLBHWithDY(dy.getDatafrom(), dy.getFcdyslbh());
+		insDJ_XGDJGL_Params[2]=ZSLBH;
+		insDJ_XGDJGL_Params[3]=BGRQ;
+		insDJ_XGDJGL_Params[4]=BGLX;
+		insDJ_XGDJGL_Params[5]=PublicDo.getDataNew("bdczmh", "dj_yg", "slbh", yGSLBH);//相关证号
+		insDJ_XGDJGL_Params[6]="房屋预告证明";
+		
+		String ins_DJ_XGDJGL_SQL ="insert into dj_xgdjgl (bgbm,zslbh,fslbh,bgrq,bglx,xgzh,xgzlx,transnum) values(?,?,?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),?,?,?,58)";
+		
+		try {
+			DoDatabase.getConnNew();
+			DoDatabase.doExecuteUpdate(ins_DJ_XGDJGL_SQL, insDJ_XGDJGL_Params);
+			log.info("※DJ_XGDJGL信息导入成功生成的BGBM(主键)为:"+BGBM+"※");
+			System.out.println("※INFO:DJ_XGDJGL信息导入成功生成的BGBM(主键)为:"+BGBM+"※");
+			rollBacksql.append("delete from dj_xgdjgl where bgbm ='"+BGBM+"';\n");
+		} catch (SQLException e) {
+			ZLZT=false;
+			//可能出现的异常 fj插不进去超过值范围 gyfe(共有份额 插不进去 值太大)//或者主键冲突
+			log.error("※DJ_XGDJGL信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
+			System.out.println("※ERROR:DJ_XGDJGL信息导入时发生错误"+e.getLocalizedMessage()+"导致导入失败※");
+			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_XGDJGL",e.getLocalizedMessage());
+		}finally {
+			DoDatabase.closeResource();
+			DoDatabase.closeConn();
+		}
 	}
 
 
@@ -392,6 +523,7 @@ public class HandleDY {
 			System.out.println("※INFO:※准备导入DJ_SJD※");
 			Object[] insDJ_SJD_Params = new String[8];
 			String SLBH = PublicDo.getSLBHWithDY(dy.getDatafrom(), dy.getFcdyslbh());
+			
 			String DJXL = dy.getDjlx();//登记小类--登记类型
 			String TZRDH =dy.getDhhm();//通知人电话
 			String TZRXM =dy.getLxr();//通知人姓名
@@ -433,6 +565,8 @@ public class HandleDY {
 	}
 	private void insertDJ_DY(DY dy) {
 		String SLBH = PublicDo.getSLBHWithDY(dy.getDatafrom(), dy.getFcdyslbh());//受理编号--不动产抵押受理 编号
+		log.info("※生成的SLBH:"+SLBH+"※");
+		System.out.println("※INFO:生成的SLBH"+SLBH+"※");
 		String DJLX = "房屋抵押";//登记类型
 		String DJYY = dy.getDjlx();//登记原因--登记类型
 		String XGZH = PublicDo.getXGZH(dy.getBdczh(), dy.getFczh(), dy.getTdzh());

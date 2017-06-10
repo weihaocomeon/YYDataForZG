@@ -168,7 +168,7 @@ public class HandleZS {
 		String BGBM = UUID.randomUUID().toString();//变更编码 随机生成
 		String ZSLBH =PublicDo.getSLBHWithDJB(zs.getYwzh());
 		String BGRQ = FormateData.subTime(zs.getDbrq());//变更日期--登簿日期
-		String BGLX = zs.getDjlx();//变更类型--收件-登记类型
+		String BGLX = FormateData.getBGLX(zs.getDjlx());//变更类型--收件-登记类型并转译
 		//相关证号是上一首业务的bdczh
 		String XGZH = PublicDo.getDataNew("bdczh", "dj_djb", "slbh", FSLBH);//上一手业务的bdczh不动产证号
 		String XGZLX = "房屋不动产证";
@@ -260,7 +260,6 @@ public class HandleZS {
 			DoDatabase.closeResource();
 			DoDatabase.closeConn();
 		}
-		
 	} 
 
 	private void toInsertQL_FWXG(ZS zs) {
@@ -585,7 +584,7 @@ public class HandleZS {
 			Object[] insDJ_SJD_Params = new String[7];
 			String SLBH = PublicDo.getSLBHWithDJB(zs.getYwzh());
 			String DJXL = zs.getDjlx();//登记类型赋值给登记小类
-			String TZRDH =zs.getDhhm();//通知人电话
+			String TZRYDDH =zs.getDhhm();//通知人电话
 			String TZRXM = zs.getLxr();//通知人姓名
 			//坐落 需要确定土地是否为空不为空 已房屋坐落为准 为空 以土地坐落为准
 			String ZL = zs.getFwzl()==null||"".equals(zs.getFwzl())?zs.getYhtdzl():zs.getFwzl();
@@ -596,13 +595,13 @@ public class HandleZS {
 			//拼接参数
 			insDJ_SJD_Params[0] = SLBH;//受理编号
 			insDJ_SJD_Params[1] = DJXL;//登记类型
-			insDJ_SJD_Params[2] = TZRDH;
+			insDJ_SJD_Params[2] = TZRYDDH;
 			insDJ_SJD_Params[3] = TZRXM;
 			insDJ_SJD_Params[4] = ZL;
 			insDJ_SJD_Params[5] = SJR;
 			insDJ_SJD_Params[6] = SJSJ;
 			
-			String insDJ_SJD = "insert into dj_sjd (slbh,djxl,tzrdh,tzrxm,zl,sjr,sjsj,transnum) values(?,?,?,?,?,?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),57)";
+			String insDJ_SJD = "insert into dj_sjd (slbh,djxl,tzryddh,tzrxm,zl,sjr,sjsj,transnum) values(?,?,?,?,?,?,to_date(?,'yyyy/mm/dd HH24:MI:SS'),57)";
 			//导入值注意 slbh为可能重复 要捕捉异常
 			try {
 				DoDatabase.getConnNew();

@@ -21,5 +21,15 @@ public class FormateData {
 	}
 	
 	
+	public static String getBGLX(String str){
+		str = str.trim();
+		if("期权后办产权".equals(str)||"按揭后办产权_二手房".equals(str)||"按揭后办产权".equals(str)){
+			return "转移含抵押";
+		}else if("".equals(str)||str==null){
+			return "";
+		}else{
+			return "权属变更";
+		}
+	}
 }
 
