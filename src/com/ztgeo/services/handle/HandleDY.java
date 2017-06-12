@@ -16,6 +16,9 @@ import com.ztgeo.utils.StringToDic;
 
 public class HandleDY {
 	static Logger log = Logger.getLogger(HandleDY.class);
+	private static int dycount ;//总条数
+	private static int dycountY ;//正确的条数
+	private static int dycountN;//错误的条数
 	private StringBuffer rollBacksql = new StringBuffer();//回滚语句
 	private boolean ZLZT;//增量状态 用来判定是否更新状态位
 	private List<DY> DYList;
@@ -38,12 +41,13 @@ public class HandleDY {
 	
 	private void toHandleDY() {
 		for (DY dy : DYList) {
+			dycount++;
 			rollBacksql.setLength(0);//回滚语句的清空
 			ZLZT=true;
 			log.info("");
 			log.info("");
-			log.info("\n※※※※FC_DYXX FCDYSLBH:"+dy.getFcdyslbh()+"※※※※");
-			System.out.println("\n\n※※※※※※※※※※※※FC_DYXX BDCDYSLBH:"+dy.getFcdyslbh()+"※※※※※※※※※※※※\n");
+			log.info("\n※※※※FC_DYXX FCDYSLBH:"+dy.getFcdyslbh()+"业务类型:"+dy.getDjlx()+"※※※※");
+			System.out.println("\n\n※※※※※※※※※※※※FC_DYXX FCDYSLBH:"+dy.getFcdyslbh()+"业务类型:"+dy.getDjlx()+"※※※※※※※※※※※※\n");
 			//查询FC_H_QSDC中是否有该房子 如果有才可以抵押 如果没有 不允许抵押
 			if(dy.getHouseinfo_id()==null||"".equals(dy.getHouseinfo_id())){
 				log.error("※该信息对应的HOUSEINFO_ID为空值，数据不规范，无法关联房子信息，导致导入失败...※");
@@ -81,19 +85,37 @@ public class HandleDY {
 			}
 			
 			//判断状态码 进行改变数据状态
-			PublicDo.changeState("fc_dyxx", "FCDYSLBH", dy.getFcdyslbh(), ZLZT);	
+			PublicDo.changeState("fc_dyxx", "FCDYSLBH", dy.getFcdyslbh(), false);	
 			log.info("※回滚语句："+rollBacksql.toString());
 			System.out.println("※INFO:回滚语句："+rollBacksql.toString());
 			//根据回滚语句和回滚方式进行自动回滚
-			PublicDo.rollbackNewD(rollBacksql.toString(),ZLZT);
+			PublicDo.rollbackNewD(rollBacksql.toString(),false);
+			
 			
 			//数据状态
 			log.info("※该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
 			System.out.println("※INFO:该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
+			if(ZLZT==true){
+				dycountY++;
+			}else{
+				dycountN++;
+			}
+			
 		}
+		
+		log.info("※抵押数据增量数据总条数:"+dycount+";导入成功条数:"+dycountY+";失败导入条数:"+dycountN+"※");
+		System.out.println("INFO:※抵押数据增量数据总条数:"+dycount+";导入成功条数:"+dycountY+";失败导入条数:"+dycountN+"※");
 	}
 	
 	private void isCanInsert_DY(DY dy) {
+		//下面是目前支持的处理类型 不在这些类型中的 暂不处理
+		if("抵押登记--房屋余额抵押".equals(dy.getDjlx())
+			||"抵押登记--预购商品房抵押转抵押".equals(dy.getDjlx())
+			||"抵押登记--房屋抵押权设定".equals(dy.getDjlx())
+			//||"抵押".equals(dy.getDjlx())
+			||"抵押登记--最高额抵押权设定".equals(dy.getDjlx())
+				){
+			
 			//查询是否有历史数据
 			String sql = "select slbh from dj_dy d where slbh in (select slbh from dj_tsgl where tstybm='"+dy.getHouseinfo_id()+"') and (d.lifecycle<>1 or d.lifecycle is null)";
 			//执行获得slbhs
@@ -104,9 +126,14 @@ public class HandleDY {
 				insertDJ_DY(dy);
 				if(ZLZT)
 					insertDJ_XGDJGL(dy);
-			};//没有有效信息 可以直接导入
-			
-		if(SLBHS.size()==1){
+			}//没有有效信息 可以直接导入
+			else if("抵押登记--房屋余额抵押".equals(dy.getDjlx())){
+			//余额抵押是可现实多抵押的
+				insertDJ_DY(dy);
+				if(ZLZT)
+					insertDJ_XGDJGL(dy);
+			}//没有有效信息 可以直接导入
+			else if(SLBHS.size()==1){
 				//判断是不是预告预抵 从xgdjgl中的bglx中判断
 				if(PublicDo.isHaveData("dj_xgdjgl", "zslbh", SLBHS.get(0))==1){
 					
@@ -139,7 +166,14 @@ public class HandleDY {
 			PublicDo.writeLogT("FC_DYXX",dy.getFcdyslbh(),"DJ_DY","DJ_DY中发现存在多条现实抵押信息，不允许被抵押");
 			ZLZT =false;
 		}
-		
+			
+			
+		}else{
+			log.error("※该抵押的登记类型不在程序处理类型之列!※");
+			System.out.println("※ERROR:该抵押的登记类型不在程序处理类型之列!※");
+			ZLZT =false;
+		}
+			
 	}
 
 
@@ -549,8 +583,8 @@ public class HandleDY {
 			try {
 				DoDatabase.getConnNew();
 				DoDatabase.doExecuteUpdate(insDJ_SJD, insDJ_SJD_Params);
-				log.info("※QL_SJD信息导入成功生成的SLBH(主键)为:"+SLBH+"※");
-				System.out.println("※INFO:QL_SJD信息导入成功生成的SLBH(主键)为:"+SLBH+"※");
+				log.info("※DJ_SJD信息导入成功生成的SLBH(主键)为:"+SLBH+"※");
+				System.out.println("※INFO:DJ_SJD信息导入成功生成的SLBH(主键)为:"+SLBH+"※");
 				rollBacksql.append("delete from dj_sjd where slbh ='"+SLBH+"';\n");
 			} catch (SQLException e) {
 				ZLZT=false;
@@ -632,8 +666,8 @@ public class HandleDY {
 		try {
 			DoDatabase.getConnNew();
 			DoDatabase.doExecuteUpdate(insDJ_DY, insDJ_DYparams);
-			log.info("※QL_DY信息导入成功生成的SLBH(主键)为:"+SLBH+"※");
-			System.out.println("※INFO:QL_DY信息导入成功生成的SLBH(主键)为:"+SLBH+"※");
+			log.info("※DJ_DY信息导入成功生成的SLBH(主键)为:"+SLBH+"※");
+			System.out.println("※INFO:DJ_DY信息导入成功生成的SLBH(主键)为:"+SLBH+"※");
 			rollBacksql.append("delete from dj_dy where slbh ='"+SLBH+"';\n");
 		} catch (SQLException e) {
 			//sql有问题时进行捕捉并保存到数据库 
