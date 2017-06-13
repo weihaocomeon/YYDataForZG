@@ -127,8 +127,8 @@ public class Main extends Thread {
 				 Quartz.startQuartz();
 			}else{
 				Services service = new Services();
-				//service.handleZS();  
-				//service.handleQLR();            
+				service.handleZS();  
+				service.handleQLR();            
 				//service.handleFJ();                                               
 				service.handleDY(); 
 				System.out.println("※程序运行结束----※");

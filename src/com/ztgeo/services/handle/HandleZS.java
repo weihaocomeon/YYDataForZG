@@ -17,6 +17,9 @@ import com.ztgeo.utils.StringToDic;
 
 public class HandleZS {
 	static Logger log = Logger.getLogger(HandleZS.class);
+	private static int dycount ;//总条数
+	private static int dycountY ;//正确的条数
+	private static int dycountN;//错误的条数
 	private StringBuffer rollBacksql = new StringBuffer();//回滚语句
 	private boolean ZLZT;//增量状态 用来判定是否更新状态位
 	private List<ZS> ZSList;
@@ -38,14 +41,13 @@ public class HandleZS {
 
 	private void toHandleZS() {
 		for (ZS zs : ZSList) {
+			dycount++;
 			rollBacksql.setLength(0);//回滚语句的清空
 			ZLZT=true;
 			log.info("");
 			log.info("");
-			log.info("※※※※FC_ZSXX 受理编号:"+zs.getSlbh()+"※※※※");
-			System.out.println("\n\n※※※※※※※※※※※※FC_ZSXX 受理编号:"+zs.getSlbh()+"※※※※※※※※※※※※\n");
-			
-			
+			log.info("※※※※FC_ZSXX 受理编号:"+zs.getSlbh()+",业务类型:"+zs.getDjlx()+"※※※※");
+			System.out.println("\n\n※※※※※※※※※※※※FC_ZSXX 受理编号:"+zs.getSlbh()+",业务类型:"+zs.getDjlx()+"※※※※※※※※※※※※\n");
 			
 			//1.导入djb
 			//逻辑判断是否可以导入 
@@ -115,7 +117,14 @@ public class HandleZS {
 			//数据状态
 			log.info("※该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
 			System.out.println("※INFO:该条数据导入结果:※"+ (ZLZT==true?"成功!!!":"失败!!!"));
+			if(ZLZT==true){
+				dycountY++;
+			}else{
+				dycountN++;
+			}
 		}
+		log.info("※证书数据增量数据总条数:"+dycount+";导入成功条数:"+dycountY+";失败导入条数:"+dycountN+"※");
+		System.out.println("INFO:※证书数据增量数据总条数:"+dycount+";导入成功条数:"+dycountY+";失败导入条数:"+dycountN+"※");
 	}
 	
 

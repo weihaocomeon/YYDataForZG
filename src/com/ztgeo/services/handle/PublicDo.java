@@ -15,7 +15,7 @@ public class PublicDo {
 	static Logger log = Logger.getLogger(PublicDo.class);
 	//获取业务宗号的方法
 	public static  String  getYWZH(String slbh){
-		String selFczh = "select zs.ywzh from fc_zsxx zs where zs.slbh = '"+slbh+"'";
+		String selFczh = "select zs.ywzh from fc_zsxx zs where zs.slbh = '"+slbh.trim()+"'";
 		DoDatabase.getConnOld();
 		//在zsxx中没有两个slbh的信息 因为在zsxx中slbh是主键  但有可能qlr查不到zsxx(可能性小)
 		ResultSet set = DoDatabase.getData(selFczh);
