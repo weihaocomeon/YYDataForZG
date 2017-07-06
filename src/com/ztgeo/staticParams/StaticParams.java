@@ -25,4 +25,7 @@ public class StaticParams {
 	
 	//rollbackType 
 	public static String rollbackType;//true=自动回滚 false=手动回滚
+	
+	//提前日期
+	public static int advanceTime;
 }

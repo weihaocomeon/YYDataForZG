@@ -8,16 +8,15 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import com.ztgeo.services.handle.HandleQLR;
 import com.ztgeo.staticParams.StaticParams;
-public class DoDatabase {
-	static Logger log = Logger.getLogger(DoDatabase.class);
+public class Dao {
+	static Logger log = Logger.getLogger(Dao.class);
 	private static Connection conn;
 	private static ResultSet set;
 	private static PreparedStatement prep;
 	private static int resultCount;
 	
-	public static Connection getConn(String url,String username, String password){
+	public static Connection getConnO(String url,String username, String password){
 		//获得驱动
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -27,21 +26,31 @@ public class DoDatabase {
 			System.out.println("----未发现数据库驱动类");
 			System.out.println(e.getLocalizedMessage());
 		} catch (SQLException e) {
-			log.error("----sql异常") ;
-			System.out.println("----sql异常") ;
+			log.error("----数据库连接异常") ;
+			System.out.println("----数据库连接异常") ;
+			System.out.println(e.getLocalizedMessage());
+		}
+		return conn;
+	}
+
+	public static Connection getConnS(String url,String username, String password){
+		//获得驱动
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			conn = DriverManager.getConnection(url, username, password);
+			System.out.println("数据库sqlserver:"+conn);
+		} catch (ClassNotFoundException e) {
+			log.error("----未发现数据库的驱动类---");
+			System.out.println("----未发现数据库驱动类");
+			System.out.println(e.getLocalizedMessage());
+		} catch (SQLException e) {
+			log.error("----数据库连接异常") ;
+			System.out.println("----数据库连接异常") ;
 			System.out.println(e.getLocalizedMessage());
 		}
 		return conn;
 	}
 	
-	//获得连接老数据库
-	public static Connection getConnOld(){
-		return getConn(StaticParams.url1, StaticParams.username1, StaticParams.password1);
-	}
-	//获得连接新数据库
-	public static Connection getConnNew(){
-		return getConn(StaticParams.url2, StaticParams.username2, StaticParams.password2);
-	}
 	//无预设的查询
 	public static ResultSet getData(String sql) {
 		//获得连接
@@ -93,8 +102,8 @@ public class DoDatabase {
 		
 
 	
-	//批量提交的执行增删改的方法
-	//执行增改查的工作 
+	   //批量提交的执行增删改的方法
+	   //执行增改查的工作 
 		public static int doExecuteUpdate(String baseSql,Object[] params) throws SQLException{
 			//使用本方法记得获得连接 设置连接 关闭连接
 			

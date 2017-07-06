@@ -23,17 +23,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
 
-import com.ztgeo.services.Services;
-import com.ztgeo.services.handle.HandleDY;
+import com.ztgeo.servicesimpl.serviceimpl;
 import com.ztgeo.staticParams.StaticParams;
 import com.ztgeo.utils.Quartz;
 import com.ztgeo.utils.ReadXml;
 
-import oracle.sql.DATE;
 
 public class Main extends Thread {
 	Logger log = Logger.getLogger(Main.class);
@@ -106,15 +103,12 @@ public class Main extends Thread {
 			String dateS = fm.format(date);
 			System.out.println("※程序启动中-----※"+dateS);
 			log.info("※程序启动中-----※"+dateS);
-			//read xml for static property
 			
-			//c用来测试
-			File directory = new File("..");//设定为当前文件夹 
+			File directory = new File("xml");//设定为当前文件夹 
 			String path="";
 			
 			
 		    path = directory.getAbsolutePath();//获取标准的路径 
-		   
 		    //jar包状态 该目录可以用
 		    //String newPath = path.replace("\\..", "");
 			//ReadXml.readXmlProperty(newPath);
@@ -126,11 +120,10 @@ public class Main extends Thread {
 			if("true".equals(StaticParams.isUseQuartz)){//启动定时程序
 				 Quartz.startQuartz();
 			}else{
-				Services service = new Services();
-				service.handleZS();  
-				service.handleQLR();            
-				//service.handleFJ();                                               
-				service.handleDY(); 
+				
+				serviceimpl im = new serviceimpl();
+				
+				im.ToDo();
 				System.out.println("※程序运行结束----※");
 				log.info("※程序运行结束----※");
 			}

@@ -8,7 +8,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.ztgeo.dao.DoDatabase;
+import com.ztgeo.dao.Dao;
 import com.ztgeo.staticParams.StaticParams;
 
 //读取xml
@@ -52,9 +52,13 @@ public class ReadXml {
 		case "rollbackType":
 			StaticParams.rollbackType = e.getText();
 			break;
-		case "isUseQuartz":
+		case "isUseQuartz": 
 			StaticParams.isUseQuartz = e.getText();
 			break;
+		case "advanceTime": 
+			System.out.println(e.getText());
+			StaticParams.advanceTime = Integer.parseInt(e.getText());
+		break;
 		default:
 			break;
 		}

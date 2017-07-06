@@ -14,6 +14,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import com.ztgeo.services.Services;
+import com.ztgeo.servicesimpl.serviceimpl;
 import com.ztgeo.staticParams.StaticParams;
 
 //定时程序
@@ -40,13 +41,10 @@ public class Quartz implements Job {
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		//执行service类
-		/*Services service = new Services();
-		service.handleZS();  
-		service.handleQLR();            
-		service.handleFJ();                                               
-		service.handleDY();*/
-	    System.out.println("※程序运行结束----※");
+		serviceimpl im = new serviceimpl();
+		
+		im.ToDo();
+		System.out.println("※程序运行结束----※");
 		log.info("※程序运行结束----※");
 		
 

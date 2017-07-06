@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF8"?>
 <root>
 	<!--配置串联库参数-->
-	<username1>bdcfck</username1>
-	<password1>bdcfck</password1>
-	<url1>jdbc:oracle:thin:@172.18.0.147:1521:bdctestsvr</url1>
+	<username1>bdchlw</username1>
+	<password1>Hlwsvr-192-bdchlw</password1>
+	<url1>jdbc:oracle:thin:@192.168.1.192:1521:Hlwsvr</url1>
 
-	<username2>xzbdcsxk</username2>
-	<password2>xzbdcsxk</password2>
-	<url2>jdbc:oracle:thin:@172.18.0.147:1521:bdctestsvr</url2>
+	<username2>bdc</username2>
+	<password2>bcd_xzzwy**##1234</password2>
+	<url2>jdbc:sqlserver://218.3.177.83:1433;DatabaseName=xzzwfw_queue</url2>
 
 	<!--数据回滚的方式-->
 	<rollbackType>true</rollbackType>
+
+	<!--是否启用定时程序-->
+	<isUseQuartz>true</isUseQuartz>
+	
+	<!--推送数据的启动执行时间-->
+	<startTime>*/15 * * * * ?</startTime>
+	
+	<!--提前几天推数据 默认一天 则查找的是明日预约数据-->
+	<advanceTime>5</advanceTime>
 </root>
 
