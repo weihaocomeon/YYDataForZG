@@ -2,7 +2,7 @@
 <root>
 	<!--连接地址-->
 	<username1>bdchlw</username1>
-	<password1>bdchlw</password1>
+	<password1>Hlwsvr-192-bdchlw</password1>
 	<url1>jdbc:oracle:thin:@localhost:1521:orcl</url1>
 
 	<username2>pdjhlogin</username2>
@@ -16,7 +16,7 @@
 	<isUseQuartz>true</isUseQuartz>
 	
 	<!--定时时间-->
-	<startTime>*/15 * * * * ?</startTime>
+	<startTime>0 4 5 ? ? ? </startTime>
 	
 	<!--查找日期-->
 	<advanceTime>0</advanceTime>

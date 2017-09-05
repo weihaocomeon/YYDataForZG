@@ -1,200 +1,84 @@
-17:07:24 09:59:52  INFO : ※程序启动中-----启动日期:※2017-07-24 09:59:360※
-17:07:24 09:59:52  INFO : xml获取得到的参数:bdchlw
+17:09:05 09:55:39  INFO : ※程序启动中-----启动日期:※2017-09-05 09:55:493※
+17:09:05 09:55:39  INFO : xml获取得到的参数:bdchlw
 bdchlw
-bdchlw
-jdbc:oracle:thin:@localhost:bdchlw
-bdc
-bcd_xzzwy**##1234
-jdbc:sqlserver://218.3.177.83:1433;DatabaseName=xzzwfw_queue
-true
-*/15 * * * * ?
-17:07:24 09:59:52 ERROR : ----数据库连接异常
-17:07:24 09:59:52  INFO : 执行查询的sql语句为:select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd
-  from ww_zxyy t
- where (yybh like 'C20170724%'
- or yybh like 'XF20170724%')
-  and t.yyzt is null
- order by yyxh
-17:07:24 10:00:41  INFO : ※程序启动中-----启动日期:※2017-07-24 10:00:658※
-17:07:24 10:00:41  INFO : xml获取得到的参数:bdchlw
-bdchlw
-bdchlw
-jdbc:oracle:thin:@localhost:orcl
-bdc
-bcd_xzzwy**##1234
-jdbc:sqlserver://218.3.177.83:1433;DatabaseName=xzzwfw_queue
-true
-*/15 * * * * ?
-17:07:24 10:00:42 ERROR : ----数据库连接异常
-17:07:24 10:00:42  INFO : 执行查询的sql语句为:select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd
-  from ww_zxyy t
- where (yybh like 'C20170724%'
- or yybh like 'XF20170724%')
-  and t.yyzt is null
- order by yyxh
-17:07:24 10:02:58  INFO : ※程序启动中-----启动日期:※2017-07-24 10:02:14※
-17:07:24 10:02:58  INFO : xml获取得到的参数:bdchlw
-bdchlw
-bdchlw
+Hlwsvr-192-bdchlw
 jdbc:oracle:thin:@localhost:1521:orcl
-bdc
-bcd_xzzwy**##1234
-jdbc:sqlserver://218.3.177.83:1433;DatabaseName=xzzwfw_queue
+pdjhlogin
+pdjh12345678
+jdbc:sqlserver://192.168.3.232:1433;DatabaseName=ASPDJHS
 true
 */15 * * * * ?
-17:07:24 10:02:58  INFO : 执行查询的sql语句为:select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd
+NumberInfo
+17:09:05 09:55:40  INFO : 执行查询的sql语句为:select yyrxm, yyrzjhm, yyrdhhm, yyxh,yysjd
   from ww_zxyy t
- where (yybh like 'C20170724%'
- or yybh like 'XF20170724%')
-  and t.yyzt is null
- order by yyxh
-17:07:24 10:02:58  INFO : 查询到日期为:20170724%的有效数据条数为24条!!
-17:07:24 10:02:59  INFO : 数据库sqlserver:ConnectionID:1 ClientConnectionId: 155a99c0-2de2-44f2-848d-ae3e96c75b19
-17:07:24 10:03:00  INFO : 导入前置库成功!数据已提交!!共导入20170724%日数据共:24条!
-17:07:24 10:03:00  INFO : ※程序运行结束----※
-17:07:24 10:23:42  INFO : ※程序启动中-----启动日期:※2017-07-24 10:23:919※
-17:07:24 10:23:43  INFO : xml获取得到的参数:bdchlw
-bdchlw
-bdchlw
-jdbc:oracle:thin:@localhost:1521:orcl
-bdc
-bcd_xzzwy**##1234
-jdbc:sqlserver://218.3.177.83:1433;DatabaseName=xzzwfw_queue
-true
-*/15 * * * * ?
-17:07:24 10:23:43  INFO : 执行查询的sql语句为:select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd
-  from ww_zxyy t
- where (yybh like 'C20170724%'
- or yybh like 'XF20170724%')
-  and t.yyzt is null
- order by yyxh
-17:07:24 10:23:43  INFO : 查询到日期为:20170724%的有效数据条数为24条!!
-17:07:24 10:23:44  INFO : 数据库sqlserver:ConnectionID:1 ClientConnectionId: b7bd460d-8003-4411-a1f4-98adb76b61e7
-17:07:24 10:23:44  INFO : 导入前置库成功!数据已提交!!共导入20170724%日数据共:24条!
-17:07:24 10:23:44  INFO : ※程序运行结束----※
-17:07:24 10:29:34  INFO : ※程序启动中-----启动日期:※2017-07-24 10:29:722※
-17:07:24 10:29:34  INFO : xml获取得到的参数:bdchlw
-bdchlw
-bdchlw
-jdbc:oracle:thin:@localhost:1521:orcl
-bdc
-bcd_xzzwy**##1234
-jdbc:sqlserver://218.3.177.83:1433;DatabaseName=xzzwfw_queue
-true
-*/15 * * * * ?
-17:07:24 10:29:35  INFO : 执行查询的sql语句为:select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd
-  from ww_zxyy t
- where (yybh like 'C20170724%'
- or yybh like 'XF20170724%')
+ where (yybh like 'E20170905%'
+ or yybh like 'F20170905%')
   and t.yyzt is null
  order by yysjd,yyxh
-17:07:24 10:29:35  INFO : 查询到日期为:20170724%的有效数据条数为24条!!
-17:07:24 10:29:36  INFO : 数据库sqlserver:ConnectionID:1 ClientConnectionId: eaffb65e-4c9e-4b2f-9f9d-912c62761d48
-17:07:24 10:29:36  INFO : 导入前置库成功!数据已提交!!共导入20170724%日数据共:24条!
-17:07:24 10:29:36  INFO : ※程序运行结束----※
-17:07:24 10:31:10  INFO : ※程序启动中-----启动日期:※2017-07-24 10:31:457※
-17:07:24 10:31:10  INFO : xml获取得到的参数:bdchlw
+17:09:05 09:55:40  INFO : 查询到日期为:20170905%的有效数据条数为2条!!
+17:09:05 09:55:41  INFO : 数据库sqlserver:ConnectionID:1 ClientConnectionId: 910ba43c-f511-4487-b425-e47a4dce3b69
+17:09:05 09:55:41  INFO : 执行插入时发生异常 数据已经回滚!!
+17:09:05 09:55:41  INFO : ※程序运行结束----※
+17:09:05 09:59:22  INFO : ※程序启动中-----启动日期:※2017-09-05 09:59:347※
+17:09:05 09:59:22  INFO : xml获取得到的参数:bdchlw
 bdchlw
-bdchlw
+Hlwsvr-192-bdchlw
 jdbc:oracle:thin:@localhost:1521:orcl
-bdc
-bcd_xzzwy**##1234
-jdbc:sqlserver://218.3.177.83:1433;DatabaseName=xzzwfw_queue
+pdjhlogin
+pdjh12345678
+jdbc:sqlserver://192.168.3.232:1433;DatabaseName=ASPDJHS
 true
 */15 * * * * ?
-17:07:24 10:31:10  INFO : Using default implementation for ThreadExecutor
-17:07:24 10:31:10  INFO : Job execution threads will use class loader of thread: main
-17:07:24 10:31:10  INFO : Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
-17:07:24 10:31:10  INFO : Quartz Scheduler v.2.2.3 created.
-17:07:24 10:31:10  INFO : RAMJobStore initialized.
-17:07:24 10:31:10  INFO : Scheduler meta-data: Quartz Scheduler (v2.2.3) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
-  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
-  NOT STARTED.
-  Currently in standby mode.
-  Number of jobs executed: 0
-  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
-  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
-
-17:07:24 10:31:10  INFO : Quartz scheduler 'DefaultQuartzScheduler' initialized from default resource file in Quartz package: 'quartz.properties'
-17:07:24 10:31:10  INFO : Quartz scheduler version: 2.2.3
-17:07:24 10:31:10  INFO : Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
-17:07:24 10:31:10 DEBUG : batch acquisition of 1 triggers
-17:07:24 10:31:15 DEBUG : Producing instance of Job 'group1.job1', class=com.ztgeo.utils.Quartz
-17:07:24 10:31:15 DEBUG : Calling execute on job group1.job1
-17:07:24 10:31:15 DEBUG : batch acquisition of 1 triggers
-17:07:24 10:31:15  INFO : 执行查询的sql语句为:select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd
+NumberInfo
+17:09:05 09:59:23  INFO : 执行查询的sql语句为:select yyrxm, yyrzjhm, yyrdhhm, yyxh,yysjd
   from ww_zxyy t
- where (yybh like 'C20170724%'
- or yybh like 'XF20170724%')
+ where (yybh like 'E20170905%'
+ or yybh like 'F20170905%')
   and t.yyzt is null
  order by yysjd,yyxh
-17:07:24 10:31:16  INFO : 查询到日期为:20170724%的有效数据条数为24条!!
-17:07:24 10:31:16  INFO : 数据库sqlserver:ConnectionID:1 ClientConnectionId: 4fecd480-612e-4415-b575-1914065d44e4
-17:07:24 10:31:16  INFO : 导入前置库成功!数据已提交!!共导入20170724%日数据共:24条!
-17:07:24 10:31:16  INFO : ※程序运行结束----※
-17:07:24 10:31:30 DEBUG : Producing instance of Job 'group1.job1', class=com.ztgeo.utils.Quartz
-17:07:24 10:31:30 DEBUG : Calling execute on job group1.job1
-17:07:24 10:31:30 DEBUG : batch acquisition of 1 triggers
-17:07:24 10:31:30  INFO : 执行查询的sql语句为:select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd
-  from ww_zxyy t
- where (yybh like 'C20170724%'
- or yybh like 'XF20170724%')
-  and t.yyzt is null
- order by yysjd,yyxh
-17:07:24 10:31:30  INFO : 查询到日期为:20170724%的有效数据条数为24条!!
-17:07:24 10:31:30  INFO : 数据库sqlserver:ConnectionID:2 ClientConnectionId: 768dedb5-502f-42ac-ab50-765e3748fdf1
-17:07:24 10:31:30  INFO : 导入前置库成功!数据已提交!!共导入20170724%日数据共:24条!
-17:07:24 10:31:30  INFO : ※程序运行结束----※
-17:07:24 10:31:45 DEBUG : Producing instance of Job 'group1.job1', class=com.ztgeo.utils.Quartz
-17:07:24 10:31:45 DEBUG : batch acquisition of 1 triggers
-17:07:24 10:31:45 DEBUG : Calling execute on job group1.job1
-17:07:24 10:31:45  INFO : 执行查询的sql语句为:select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd
-  from ww_zxyy t
- where (yybh like 'C20170724%'
- or yybh like 'XF20170724%')
-  and t.yyzt is null
- order by yysjd,yyxh
-17:07:24 10:31:45  INFO : 查询到日期为:20170724%的有效数据条数为24条!!
-17:07:24 10:31:45  INFO : 数据库sqlserver:ConnectionID:3 ClientConnectionId: 2bb7c891-9f83-4241-bf10-fb3b6fd75155
-17:07:24 10:31:45  INFO : 导入前置库成功!数据已提交!!共导入20170724%日数据共:24条!
-17:07:24 10:31:45  INFO : ※程序运行结束----※
-17:07:24 10:33:41  INFO : ※程序启动中-----启动日期:※2017-07-24 10:33:800※
-17:07:24 10:33:42  INFO : xml获取得到的参数:bdchlw
+17:09:05 09:59:23  INFO : 查询到日期为:20170905%的有效数据条数为2条!!
+17:09:05 09:59:24  INFO : 数据库sqlserver:ConnectionID:1 ClientConnectionId: cc80ecf0-b620-4434-9e5a-bb6649f7ba1c
+17:09:05 09:59:24  INFO : 导入前置库成功!数据已提交!!共导入20170905%日数据共:2条!
+17:09:05 09:59:24  INFO : ※程序运行结束----※
+17:09:05 10:07:01  INFO : ※程序启动中-----启动日期:※2017-09-05 10:07:676※
+17:09:05 10:07:02  INFO : xml获取得到的参数:bdchlw
 bdchlw
-bdchlw
+Hlwsvr-192-bdchlw
 jdbc:oracle:thin:@localhost:1521:orcl
-bdc
-bcd_xzzwy**##1234
-jdbc:sqlserver://218.3.177.83:1433;DatabaseName=xzzwfw_queue
+pdjhlogin
+pdjh12345678
+jdbc:sqlserver://192.168.3.232:1433;DatabaseName=ASPDJHS
 true
 */15 * * * * ?
-17:07:24 10:33:42  INFO : Using default implementation for ThreadExecutor
-17:07:24 10:33:42  INFO : Job execution threads will use class loader of thread: main
-17:07:24 10:33:42  INFO : Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
-17:07:24 10:33:42  INFO : Quartz Scheduler v.2.2.3 created.
-17:07:24 10:33:42  INFO : RAMJobStore initialized.
-17:07:24 10:33:42  INFO : Scheduler meta-data: Quartz Scheduler (v2.2.3) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
-  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
-  NOT STARTED.
-  Currently in standby mode.
-  Number of jobs executed: 0
-  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
-  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
-
-17:07:24 10:33:42  INFO : Quartz scheduler 'DefaultQuartzScheduler' initialized from default resource file in Quartz package: 'quartz.properties'
-17:07:24 10:33:42  INFO : Quartz scheduler version: 2.2.3
-17:07:24 10:33:42  INFO : Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
-17:07:24 10:33:42 DEBUG : batch acquisition of 1 triggers
-17:07:24 10:33:45 DEBUG : Producing instance of Job 'group1.job1', class=com.ztgeo.utils.Quartz
-17:07:24 10:33:45 DEBUG : Calling execute on job group1.job1
-17:07:24 10:33:45 DEBUG : batch acquisition of 1 triggers
-17:07:24 10:33:45  INFO : 执行查询的sql语句为:select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd
+NumberInfo
+17:09:05 10:07:02  INFO : 执行查询的sql语句为:select yyrxm, yyrzjhm, yyrdhhm, yyxh,yysjd
   from ww_zxyy t
- where (yybh like 'C20170724%'
- or yybh like 'XF20170724%')
+ where (yybh like 'E20170826%'
+ or yybh like 'F20170826%')
   and t.yyzt is null
  order by yysjd,yyxh
-17:07:24 10:33:46  INFO : 查询到日期为:20170724%的有效数据条数为24条!!
-17:07:24 10:33:46  INFO : 数据库sqlserver:ConnectionID:1 ClientConnectionId: f0c948e9-db29-48c9-9cca-7c1f133aa8d3
-17:07:24 10:33:47  INFO : 导入前置库成功!数据已提交!!共导入20170724%日数据共:24条!
-17:07:24 10:33:47  INFO : ※程序运行结束----※
+17:09:05 10:07:02  INFO : 查询到日期为:20170826%的有效数据条数为5条!!
+17:09:05 10:07:03  INFO : 数据库sqlserver:ConnectionID:1 ClientConnectionId: b0697558-c340-4609-8251-35417bf47632
+17:09:05 10:07:03  INFO : 导入前置库成功!数据已提交!!共导入20170826%日数据共:5条!
+17:09:05 10:07:03  INFO : ※程序运行结束----※
+17:09:05 10:16:44  INFO : ※程序启动中-----启动日期:※2017-09-05 10:16:371※
+17:09:05 10:16:44  INFO : xml获取得到的参数:bdchlw
+bdchlw
+Hlwsvr-192-bdchlw
+jdbc:oracle:thin:@localhost:1521:orcl
+pdjhlogin
+pdjh12345678
+jdbc:sqlserver://192.168.3.232:1433;DatabaseName=ASPDJHS
+true
+*/15 * * * * ?
+NumberInfo
+17:09:05 10:16:45  INFO : 执行查询的sql语句为:select yyrxm, yyrzjhm, yyrdhhm, yyxh,yysjd
+  from ww_zxyy t
+ where (yybh like 'E20170815%'
+ or yybh like 'F20170815%')
+  and t.yyzt is null
+ order by yysjd,yyxh
+17:09:05 10:16:45  INFO : 查询到日期为:20170815%的有效数据条数为140条!!
+17:09:05 10:16:46  INFO : 数据库sqlserver:ConnectionID:1 ClientConnectionId: d59bbe27-7ad5-4d7e-9b19-268d5dc7bfc6
+17:09:05 10:16:50  INFO : 导入前置库成功!数据已提交!!共导入20170815%日数据共:140条!
+17:09:05 10:16:50  INFO : ※程序运行结束----※

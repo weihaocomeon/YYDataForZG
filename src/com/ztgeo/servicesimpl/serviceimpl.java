@@ -54,25 +54,25 @@ public class serviceimpl implements Services {
 			for (int i = 0; i < cyyList.size(); i++) {
 				Object[] params = new Object[5];
 				//数据赋值
-				params[1] = cyyList.get(i).getQNO();//顺序号
-				params[0] = params[1].toString().contains("XF")?"二手房交易":"登记受理";//是否是二手房业务 否则普通C
-				params[2] = cyyList.get(i).getNAME();//姓名
-				params[3] = cyyList.get(i).getIDENTITYCARDNUM();//身份证
-				params[4] = cyyList.get(i).getCARDID();//联系方式
+				params[0] = cyyList.get(i).getNI_NAME();//姓名
+				params[1] = cyyList.get(i).getNI_SFZ();//身份证
+				params[2] = cyyList.get(i).getNI_PHONE(); //电话号码
+				params[3] = cyyList.get(i).getNI_NUMBER();//预约号
+				params[4] = cyyList.get(i).getNI_Noon();//预约时间段
 				//准备sql语句
 				String sql = "";
 				
-				if("上午".equals(cyyList.get(i).getYYSJD())){		
+				if("上午".equals(cyyList.get(i).getNI_Noon())){		
 					sql="insert into [dbo].["+StaticParams.sqlServer+"] \n" +
-						"(rowguid,taskname,qno,name,identitycardnum,cardid,appointfromtime)\n" +
+						"(ni_name,ni_sfz,ni_phone,ni_number,ni_booktime,ni_noon,ni_type,ni_createtime)\n" +
 						"VALUES\n" +
-						"(NEWID(),?,?,?,?,?,dateadd(day,"+ StaticParams.advanceTime +",dateadd(Minute,"+(i+1)+",GETDATE())))";//DATEADD(HOUR, -15, DATEADD(Minute, -1, GETDATE()))  
+						"(?,?,?,?,dateadd(day,"+ StaticParams.advanceTime +",dateadd(Minute,"+(i+1)+",GETDATE())),?,1,GETDATE())";//DATEADD(HOUR, -15, DATEADD(Minute, -1, GETDATE()))  
 				}else{
 					j++;
 					sql="insert into [dbo].["+StaticParams.sqlServer+"] \n" +
-							"(rowguid,taskname,qno,name,identitycardnum,cardid,appointfromtime)\n" +
+							"(ni_name,ni_sfz,ni_phone,ni_number,ni_booktime,ni_noon,ni_type,ni_createtime)\n" +
 							"VALUES\n" +
-							"(NEWID(),?,?,?,?,?,dateadd(day,"+ StaticParams.advanceTime +",DATEADD(HOUR, "+StaticParams.PmHourTime+",dateadd(Minute,"+(j)+",GETDATE()))))";
+							"(?,?,?,?,dateadd(day,"+ StaticParams.advanceTime +",DATEADD(HOUR, "+StaticParams.PmHourTime+",dateadd(Minute,"+(j)+",GETDATE()))),?,1,GETDATE())";
 					
 				}
 					//插入表 
@@ -113,10 +113,10 @@ public class serviceimpl implements Services {
 				Dao.getConnO(StaticParams.url1, StaticParams.username1, StaticParams.password1);
 				//拿数据的sql
 				String sql = 					
-						"select yyxh, yyrxm, yyrdhhm, yyrzjhm,yysjd\n" +
+						"select yyrxm, yyrzjhm, yyrdhhm, yyxh,yysjd\n" +
 						"  from ww_zxyy t\n" + 
-						" where (yybh like 'C"+yybh+"'\n" + 
-						" or yybh like 'XF"+yybh+"')\n" + 
+						" where (yybh like 'E"+yybh+"'\n" + 
+						" or yybh like 'F"+yybh+"')\n" + 
 						"  and t.yyzt is null\n" + 
 						" order by yysjd,yyxh";
 				System.out.println("执行查询的sql语句为:"+sql);

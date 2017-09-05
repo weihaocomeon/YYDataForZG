@@ -2,96 +2,72 @@ package com.ztgeo.entity;
 
 //预约人信息的实体类
 public class YYINFO {
-	private String QNO; //预约顺序号
+	private String NI_NUMBER; //预约顺序号
 	
-	private String NAME; //预约人姓名
+	private String NI_NAME; //预约人姓名
 	
-	private String IDENTITYCARDNUM; //身份证信息
+	private String NI_SFZ; //身份证信息
 	
-	private String CARDID; //预约人联系方式
-	private String YYSJD;//预约时间段
+	private String NI_PHONE; //预约人联系方式
+	private String NI_Noon;//预约时间段
 	
 	public YYINFO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	
-	
-
-
-
-	public String getYYSJD() {
-		return YYSJD;
-	}
-
-
-
-
-
-
-	public void setYYSJD(String yYSJD) {
-		YYSJD = yYSJD;
-	}
-
-
-
-
-
-
-	public YYINFO(String qNO, String nAME, String iDENTITYCARDNUM, String cARDID, String yYSJD) {
+	public YYINFO(String nI_NUMBER, String nI_NAME, String nI_SFZ, String nI_PHONE, String nI_Noon) {
 		super();
-		QNO = qNO;
-		NAME = nAME;
-		IDENTITYCARDNUM = iDENTITYCARDNUM;
-		CARDID = cARDID;
-		YYSJD = yYSJD;
+		NI_NUMBER = nI_NUMBER;
+		NI_NAME = nI_NAME;
+		NI_SFZ = nI_SFZ;
+		NI_PHONE = nI_PHONE;
+		NI_Noon = nI_Noon;
 	}
 
-
-
-
-
-
-	public String getQNO() {
-		return QNO;
+	public String getNI_NUMBER() {
+		return NI_NUMBER;
 	}
 
-	public void setQNO(String qNO) {
-		QNO = qNO;
+	public void setNI_NUMBER(String nI_NUMBER) {
+		NI_NUMBER = nI_NUMBER;
 	}
 
-	public String getNAME() {
-		return NAME;
+	public String getNI_NAME() {
+		return NI_NAME;
 	}
 
-	public void setNAME(String nAME) {
-		NAME = nAME;
+	public void setNI_NAME(String nI_NAME) {
+		NI_NAME = nI_NAME;
 	}
 
-	public String getIDENTITYCARDNUM() {
-		return IDENTITYCARDNUM;
+	public String getNI_SFZ() {
+		return NI_SFZ;
 	}
 
-	public void setIDENTITYCARDNUM(String iDENTITYCARDNUM) {
-		IDENTITYCARDNUM = iDENTITYCARDNUM;
+	public void setNI_SFZ(String nI_SFZ) {
+		NI_SFZ = nI_SFZ;
 	}
 
-	public String getCARDID() {
-		return CARDID;
+	public String getNI_PHONE() {
+		return NI_PHONE;
 	}
 
-	public void setCARDID(String cARDID) {
-		CARDID = cARDID;
+	public void setNI_PHONE(String nI_PHONE) {
+		NI_PHONE = nI_PHONE;
 	}
 
-
-
-	@Override
-	public String toString() {
-		return "预约人信息 [预约人顺序号=" + QNO + ", 姓名=" + NAME + ", 身份证=" + IDENTITYCARDNUM + ", 号码=" + CARDID
-				+ "]";
+	public String getNI_Noon() {
+		return NI_Noon;
 	}
+
+	public void setNI_Noon(String nI_Noon) {
+		NI_Noon = nI_Noon;
+	}
+
 	
 	
+
+
+
 	
 }

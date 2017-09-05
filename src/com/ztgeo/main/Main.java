@@ -49,7 +49,7 @@ public class Main extends Thread {
 			e1.printStackTrace();
 		}
 		  
-		jf = new JFrame("预约系统加密数据推送");
+		jf = new JFrame("预约系统加密数据推送For中庚(建国西路数据)");
 		Container contentPane = jf.getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		StringStr.jta=new JTextArea(10,15);
@@ -69,8 +69,8 @@ public class Main extends Thread {
 		jf.setVisible(true);
 		jf.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				System.out.println("本程序不允许被终止!");
-				//System.exit(0);
+				//System.out.println("本程序不允许被终止!");
+				System.exit(0);
 			}
 		});
 	//
