@@ -25,10 +25,14 @@ public class Dao {
 			log.error("----未发现数据库的驱动类---");
 			System.out.println("----未发现数据库驱动类");
 			System.out.println(e.getLocalizedMessage());
+			StaticParams.sbForEmail.append("----未发现数据库驱动类\n");
+			StaticParams.sbForEmail.append(e.getLocalizedMessage()+"\n");
 		} catch (SQLException e) {
 			log.error("----数据库连接异常") ;
 			System.out.println("----数据库连接异常") ;
 			System.out.println(e.getLocalizedMessage());
+			StaticParams.sbForEmail.append("----数据库连接异常\n") ;
+			StaticParams.sbForEmail.append(e.getLocalizedMessage()+"\n");
 		}
 		return conn;
 	}
@@ -38,7 +42,9 @@ public class Dao {
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			conn = DriverManager.getConnection(url, username, password);
-			System.out.println("数据库sqlserver:"+conn);
+			System.out.println("数据库s:"+conn);
+			log.info("数据库sqlserver:"+conn);
+			StaticParams.sbForEmail.append("数据库sqlserver:"+conn+"\n");
 		} catch (ClassNotFoundException e) {
 			log.error("----未发现数据库的驱动类---");
 			System.out.println("----未发现数据库驱动类");
@@ -47,6 +53,9 @@ public class Dao {
 			log.error("----数据库连接异常") ;
 			System.out.println("----数据库连接异常") ;
 			System.out.println(e.getLocalizedMessage());
+			log.error("----数据库连接异常") ;
+			StaticParams.sbForEmail.append("----数据库连接异常\n") ;
+			StaticParams.sbForEmail.append(e.getLocalizedMessage()+"\n");
 		}
 		return conn;
 	}
@@ -83,7 +92,6 @@ public class Dao {
 		return total;
 	}
 	
-	//有预设的查询 可用于分页等
 	public static ResultSet getDataByParams(String baseSql,String[] params){
 		//遍历params进行预设prep
 		try {
@@ -125,6 +133,10 @@ public class Dao {
 		} catch (SQLException e) {
 			System.out.println("-----关闭连接时遇到问题");
 			System.out.println(e.getLocalizedMessage());
+			log.error("-----关闭连接时遇到问题");
+			log.info("-----关闭连接时遇到问题");
+			StaticParams.sbForEmail.append("-----关闭连接时遇到问题\n");
+			StaticParams.sbForEmail.append(e.getLocalizedMessage()+"\n");
 		}
 		
 	} 
@@ -142,6 +154,10 @@ public class Dao {
 		} catch (SQLException e) {
 			System.out.println("----关闭资源文件遇到问题");
 			System.out.println(e.getLocalizedMessage());
+			log.error("----关闭资源文件遇到问题");
+			log.error(e.getLocalizedMessage());
+			StaticParams.sbForEmail.append("----关闭资源文件遇到问题\n");
+			StaticParams.sbForEmail.append(e.getLocalizedMessage()+"\n");
 		}
 	}
 

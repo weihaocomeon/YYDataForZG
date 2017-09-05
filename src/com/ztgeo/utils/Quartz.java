@@ -22,6 +22,7 @@ public class Quartz implements Job {
 	Logger log = Logger.getLogger(Quartz.class);
 	//声明变量 读取xml
 	public static void startQuartz(){
+		
 		try {
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 			//任务具体
@@ -41,12 +42,22 @@ public class Quartz implements Job {
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+		//邮件数据清空
+		StaticParams.sbForEmail.setLength(0);
 		serviceimpl im = new serviceimpl();
 		
 		im.ToDo();
 		System.out.println("※程序运行结束----※");
 		log.info("※程序运行结束----※");
-		
+		//判断sb长度 是否发送邮件
+		if(StaticParams.sbForEmail.length()>0){
+			//写入邮件系统
+			try {
+				Email.setEmail(StaticParams.sbForEmail.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 		
 	}

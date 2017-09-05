@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="UTF8"?>
 <root>
-	<!--ÅäÖÃ´®Áª¿â²ÎÊý-->
+	<!--è¿žæŽ¥åœ°å€-->
 	<username1>bdchlw</username1>
-	<password1>Hlwsvr-192-bdchlw</password1>
-	<url1>jdbc:oracle:thin:@192.168.1.192:1521:Hlwsvr</url1>
+	<password1>bdchlw</password1>
+	<url1>jdbc:oracle:thin:@localhost:1521:orcl</url1>
 
-	<username2>bdc</username2>
-	<password2>bcd_xzzwy**##1234</password2>
-	<url2>jdbc:sqlserver://218.3.177.83:1433;DatabaseName=xzzwfw_queue</url2>
+	<username2>pdjhlogin</username2>
+	<password2>pdjh12345678</password2>
+	<url2>jdbc:sqlserver://192.168.3.232:1433;DatabaseName=ASPDJHS</url2>
 
-	<!--Êý¾Ý»Ø¹öµÄ·½Ê½-->
+	<!--æ˜¯å¦å›žæ»šÊ½-->
 	<rollbackType>true</rollbackType>
 
-	<!--ÊÇ·ñÆôÓÃ¶¨Ê±³ÌÐò-->
+	<!--æ˜¯å¦å®šæ—¶-->
 	<isUseQuartz>true</isUseQuartz>
 	
-	<!--ÍÆËÍÊý¾ÝµÄÆô¶¯Ö´ÐÐÊ±¼ä-->
+	<!--å®šæ—¶æ—¶é—´-->
 	<startTime>*/15 * * * * ?</startTime>
 	
-	<!--ÌáÇ°¼¸ÌìÍÆÊý¾Ý Ä¬ÈÏÒ»Ìì Ôò²éÕÒµÄÊÇÃ÷ÈÕÔ¤Ô¼Êý¾Ý-->
-	<advanceTime>5</advanceTime>
+	<!--æŸ¥æ‰¾æ—¥æœŸ-->
+	<advanceTime>0</advanceTime>
+	
+	<!--ä¸‹åˆæ—¶æ®µé—´éš”å°æ—¶æ•°  -->
+	<PmHourTime>7</PmHourTime>
+	
+	<!-- ç›®æ ‡sqlserveråº“ -->
+	<sqlServer>NumberInfo</sqlServer>
 </root>
 

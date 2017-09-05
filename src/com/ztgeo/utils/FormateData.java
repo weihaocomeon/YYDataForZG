@@ -22,6 +22,14 @@ public class FormateData {
 	}
 	
 	
+	//获取当前的系统时间
+	public static String getNowTime(){
+		Date date = new Date();
+		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+		String dateS = fm.format(date);
+		return dateS;
+	}
+	
 	@Test
 	public  void dod(){
 		FormateData fm = new FormateData();

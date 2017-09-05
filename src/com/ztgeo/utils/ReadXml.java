@@ -22,6 +22,7 @@ public class ReadXml {
 		//读取获得对象
 		try {
 		doc = reader.read(new File(path+"\\setProperty.xml"));
+		System.out.println("当前目录:"+path+"\\setProperty.xml");
 		Element root = doc.getRootElement();
 		//获得所有根节点下的子节点集合
 		List<Element> elements = root.elements();
@@ -59,6 +60,14 @@ public class ReadXml {
 			System.out.println(e.getText());
 			StaticParams.advanceTime = Integer.parseInt(e.getText());
 		break;
+		case "PmHourTime": 
+			System.out.println(e.getText());
+			StaticParams.PmHourTime = Integer.parseInt(e.getText());
+		break;
+		case "sqlServer": 
+			System.out.println(e.getText());
+			StaticParams.sqlServer = e.getText();
+		break;
 		default:
 			break;
 		}
@@ -77,8 +86,9 @@ public class ReadXml {
 				+"\n"+StaticParams.url2
 				+"\n"+StaticParams.rollbackType
 				+"\n"+StaticParams.QuartzTime
+				+"\n"+StaticParams.sqlServer
 				);
-		System.out.println("xml获取得到的参数:"
+		StaticParams.sbForEmail.append("xml获取得到的参数:"
 				+"\n串联库用户名:"+StaticParams.username1
 				+"\n串联库密码:"+StaticParams.password1
 				+"\n房产库url:"+StaticParams.url1
@@ -87,6 +97,7 @@ public class ReadXml {
 				+"\n不动产库url:"+StaticParams.url2
 				+"\n"+StaticParams.rollbackType
 				+"\n"+StaticParams.QuartzTime
+				+"\n"+StaticParams.sqlServer
 				);
 		
 	}

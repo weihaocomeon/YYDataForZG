@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/ojdbc14.jar"/>
 	<classpathentry kind="lib" path="lib/SwingSets3(BeautyEyeLNFDemo).jar"/>
 	<classpathentry kind="lib" path="lib/sqljdbc42.jar"/>
+	<classpathentry kind="lib" path="lib/javax.mail-1.5.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -28,4 +28,13 @@ public class StaticParams {
 	
 	//提前日期
 	public static int advanceTime;
+	
+	//下午中间间隔时间段
+	public static int PmHourTime;
+	
+	//邮件数据字符串
+	public static StringBuffer sbForEmail= new StringBuffer();
+	
+	//sqlserver库的地址
+	public static String sqlServer;
 }

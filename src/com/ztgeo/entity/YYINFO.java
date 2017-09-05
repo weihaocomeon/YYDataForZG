@@ -9,6 +9,7 @@ public class YYINFO {
 	private String IDENTITYCARDNUM; //身份证信息
 	
 	private String CARDID; //预约人联系方式
+	private String YYSJD;//预约时间段
 	
 	public YYINFO() {
 		// TODO Auto-generated constructor stub
@@ -16,13 +17,38 @@ public class YYINFO {
 
 	
 	
-	public YYINFO(String qNO, String nAME, String iDENTITYCARDNUM, String cARDID) {
+
+
+
+	public String getYYSJD() {
+		return YYSJD;
+	}
+
+
+
+
+
+
+	public void setYYSJD(String yYSJD) {
+		YYSJD = yYSJD;
+	}
+
+
+
+
+
+
+	public YYINFO(String qNO, String nAME, String iDENTITYCARDNUM, String cARDID, String yYSJD) {
 		super();
 		QNO = qNO;
 		NAME = nAME;
 		IDENTITYCARDNUM = iDENTITYCARDNUM;
 		CARDID = cARDID;
+		YYSJD = yYSJD;
 	}
+
+
+
 
 
 
