@@ -7,7 +7,7 @@
 
 	<username2>pdjhlogin</username2>
 	<password2>pdjh12345678</password2>
-	<url2>jdbc:sqlserver://192.168.3.232:1433;DatabaseName=ASPDJHS</url2>
+	<url2>jdbc:sqlserver://----:1433;DatabaseName=ASPDJHS</url2>
 
 	<!--是否回滚ʽ-->
 	<rollbackType>true</rollbackType>
